@@ -2,28 +2,28 @@
 \alias{summary.bce}
 \title{summary BCE}
 \description{basic statistics of a bce object}
-\usage{summary.bce(mcmc, confidenceInterval=2/3)}
+\usage{summary.bce(mcmc, confInt=2/3)}
 \arguments{
   \item{mcmc }{a bce-object, output of the function bce()}
-  \item{confidenceInterval }{confidence interval of values of composion matrix and ratio matrix}
+  \item{confInt }{confidence interval of values of composion matrix and ratio matrix}
 }
 \value{
   a list containing:
-  \item{firstx }{x determined through least squares regression from the initial ratio matrix and the data matrix}
-  \item{bestrat }{ratio matrix for which the posterior probability is maximal}
-  \item{bestx }{composition matrix for which the posterior probability is maximal}
-  \item{bestp }{maximal posterior probability}
-  \item{bestdat }{product of bestrat and bestx}
-  \item{meanrat }{means of the elements of the ratio matrix}
-  \item{sdrat }{standard deviation of the elements of the ratio matrix}
-  \item{lbrat }{lower boundary of the confidence interval of the elements of the ratio matrix}
-  \item{ubrat }{upper boundary of the confidence interval of the elements of the ratio matrix}
-  \item{covrat }{covariance matrix of the elements of the ratio matrix}
-  \item{meanx }{means of the elements of the composition matrix}
-  \item{sdx }{standard deviation of the elements of the composition matrix}
-  \item{lbx }{lower boundary of the confidence interval of the elements of the composition matrix}
-  \item{ubx }{upper boundary of the confidence interval of the elements of the composition matrix}
-  \item{covx }{covariance matrix of the elements of the composition matrix}
+  \item{firstX }{X determined through least squares regression from the initial ratio matrix and the data matrix}
+  \item{bestRat }{Ratio matrix for which the posterior probability is maximal}
+  \item{bestX }{Composition matrix for which the posterior probability is maximal}
+  \item{bestp }{Maximal posterior probability}
+  \item{bestDat }{Product of \code{bestRat} and \code{bestX}}
+  \item{meanRat }{Means of the elements of the ratio matrix}
+  \item{sdRat }{Standard deviation of the elements of the ratio matrix}
+  \item{lbRat }{Lower boundary of the confidence interval of the elements of the ratio matrix}
+  \item{ubRat }{Upper boundary of the confidence interval of the elements of the ratio matrix}
+  \item{covRat }{Covariance matrix of the elements of the ratio matrix}
+  \item{meanX }{Means of the elements of the composition matrix}
+  \item{sdX }{Standard deviation of the elements of the composition matrix}
+  \item{lbX }{Lower boundary of the confidence interval of the elements of the composition matrix}
+  \item{ubX }{Upper boundary of the confidence interval of the elements of the composition matrix}
+  \item{covX }{Covariance matrix of the elements of the composition matrix}
 }
 \author{Karel Van den Meersche}
 \keyword{models}

@@ -7,7 +7,12 @@ based on
 samples, and 
 \item an \bold{input data matrix}, \code{Dat}, containing the biomarker
 ratios for several taxonomic groups}
-\usage{BCE(Rat, Dat, relsdRat = 0, abssdRat = 0, minRat   = 0, maxRat   = +Inf, relsdDat = 0, abssdDat = 0, tol      = 1e-4, tolX     = 1e-4, positive = 1:ncol(Rat), iter     = 100, outputlength = 1000, burninlength = 0, jmpRat   = 0.01, jmpX     = 0.01, unif     = FALSE, verbose  = TRUE, initRat  = Rat, initX    = NULL, userProb = NULL, confInt  = 2/3, export   = FALSE, filename = "BCE")}
+\usage{BCE(Rat, Dat, relsdRat = 0, abssdRat = 0, minRat = 0, 
+maxRat = +Inf, relsdDat = 0, abssdDat = 0, tol = 1e-4, tolX = 1e-4, 
+positive = 1:ncol(Rat), iter = 100, outputlength = 1000, 
+burninlength = 0, jmpRat = 0.01, jmpX = 0.01, unif = FALSE, 
+verbose = TRUE, initRat = Rat, initX = NULL, userProb = NULL, 
+confInt = 2/3, export = FALSE, filename = "BCE")}
 \arguments{
   \item{Rat }{initial ratio matrix. Each row of \code{Rat} contains the biomarker composition
   of one taxon. As a result of the Bayesian procedure, this initial ratio matrix will be altered
