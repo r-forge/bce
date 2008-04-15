@@ -617,12 +617,12 @@ export.bce <- function(BCE,             # a bce object, output of the function b
 plot.bce <- function(bce)               # bce object
   {with(bce,{
     
-    nalg <- ncol(mcmc.X)
-    npig <- ncol(mcmc.Rat)
-    nst <- nrow(mcmc.X)
-    algnames <- colnames(mcmc.X)
-    pignames <- colnames(mcmc.Rat)
-    stnames <- rownames(mcmc.X)
+    nalg <- ncol(X)
+    npig <- ncol(Rat)
+    nst <- nrow(X)
+    algnames <- colnames(X)
+    pignames <- colnames(Rat)
+    stnames <- rownames(X)
 
     oldpar <- par(no.readonly=TRUE)
     par(mfrow=c(nalg,npig),mar=c(0,0,0,0),oma=c(0,0,1,0),ask=TRUE)
@@ -631,7 +631,7 @@ plot.bce <- function(bce)               # bce object
       {
         for (j in 1:npig)
           {
-            plot(mcmc.Rat[i,j,],type="l",xlab="",ylab="",xaxt="n",yaxt="n")
+            plot(Rat[i,j,],type="l",xlab="",ylab="",xaxt="n",yaxt="n")
           }
       }
     mtext("ratio matrix traces",outer=TRUE)
@@ -641,7 +641,7 @@ plot.bce <- function(bce)               # bce object
       {
         for(j in 1:nalg)
           {
-            plot(mcmc.X[i,j,],type="l",xlab="",ylab="",xaxt="n",yaxt="n")
+            plot(X[i,j,],type="l",xlab="",ylab="",xaxt="n",yaxt="n")
           }
       }
     par(oldpar)
