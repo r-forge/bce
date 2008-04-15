@@ -67,6 +67,53 @@ If NULL, the list is exported to the location indicated by the path. }
   \item{p }{ vector with length \code{iter} containing the random walk values of the posterior probability}
   \item{naccepted }{ integer indicating the number of runs that were accepted}
 }
+\examples{
+##====================================
+
+# example using bceInput data
+# first try
+
+X <- BCE(bceInput$Rat,bceInput$Dat,relsdRat=.2,relsdDat=.2,
+         iter=1000,outputlength=5000,jmpX=.01,jmpRat=.01)
+
+## the number of accepted runs is too low;
+## we play around with the jump lengths jmpx and jmprat
+
+X <- BCE(bceInput$Rat,bceInput$Dat,relsdRat=.2,relsdDat=.2,
+         iter=1000,outputlength=5000,jmpX=.02,jmpRat=.002)
+
+## we inspect the output:
+plot(X)
+
+## mixing is still a little poor.
+## to optimize mixing in the ratio matrix, it is a good idea
+## to make the jump length linear to the ratio matrix
+## standard deviation (sdrat=.2*rat) :
+X <- BCE(bceInput$Rat,bceInput$Dat,relsdRat=.2,relsdDat=.2,
+         iter=1000,outputlength=5000,jmpX=.02,
+         jmpRat=.2*(.2*bceInput$Rat))
+plot(X)
+
+## set export=TRUE to write the result immediately to files.
+## mixing improved a lot; we repeat the run with more iterations
+## to improve the reliability of the results.
+## the following run can take a few minutes - so it is toggled off
+#X <- BCE(bceInput$Rat,bceInput$Dat,relsdRat=.2,relsdDat=.2,
+#         iter=100000,outputlength=5000,jmpX=.02,
+#         jmpRat=.2*(.2*bceInput$Rat))
+#plot(X)
+
+SUM <-summary(X)
+
+# show results
+print(SUM$meanX)
+
+dotchart(x=t(SUM$meanX),
+         main="Taxonomic composition",
+         sub="using bce",pch=16)
+
+
+}
 \author{Karel Van de Meersche <k.vdmeersche@nioo.knaw.nl>, Karline Soetaert <k.soetaert@nioo.knaw.nl>}
 \keyword{models}
 
