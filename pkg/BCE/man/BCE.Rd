@@ -103,14 +103,28 @@ plot(X)
 #         jmpRat=.2*(.2*bceInput$Rat))
 #plot(X)
 
-SUM <-summary(X)
+Sum <-summary(X)
 
 # show results
-print(SUM$meanX)
+print(Sum$meanX)
 
-dotchart(x=t(SUM$meanX),
+# plot estimated means and ranges (lbX=lower, ubX=upper bound)
+xlim <- range(c(Sum$lbX,Sum$ubX))
+
+# first the mean
+dotchart(x=t(Sum$meanX),xlim=xlim,                                                          
          main="Taxonomic composition",
          sub="using bce",pch=16)
+
+# then ranges
+nr <- nrow(Sum$meanX)
+nc <- ncol(Sum$meanX)
+
+for (i in 1:nr) 
+{ip <-(nr-i)*(nc+2)+1
+ cc <- ip : (ip+nc-1)
+ segments(t(Sum$lbX[i,]),cc,t(Sum$ubX[i,]),cc)
+ }
 
 
 }
