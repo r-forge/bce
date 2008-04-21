@@ -26,5 +26,11 @@
   \item{covX }{Covariance matrix of the elements of the composition matrix}
 }
 \author{Karel Van den Meersche}
+\examples{
+# bceOutput is an example output based on bceInput
+
+summary(bceOutput)
+}
+
 \keyword{models}
 

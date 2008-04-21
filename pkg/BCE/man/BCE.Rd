@@ -102,10 +102,12 @@ plot(X)
 #         iter=100000,outputlength=5000,jmpX=.02,
 #         jmpRat=.2*(.2*bceInput$Rat))
 #plot(X)
+# This run was saved in "bceOutput"
+X <- bceOutput 
 
 Sum <-summary(X)
 
-# show results
+# show results as mean with ranges
 print(Sum$meanX)
 
 # plot estimated means and ranges (lbX=lower, ubX=upper bound)
@@ -126,6 +128,8 @@ for (i in 1:nr)
  segments(t(Sum$lbX[i,]),cc,t(Sum$ubX[i,]),cc)
  }
 
+# show results as pairs plot
+pairs(X,sample=3,main="Station 3")
 
 }
 \author{Karel Van den Meersche <k.vdmeersche@nioo.knaw.nl>, Karline Soetaert <k.soetaert@nioo.knaw.nl>}

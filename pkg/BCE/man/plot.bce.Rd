@@ -7,5 +7,11 @@
   \item{bce }{bce object}
 }
 \author{Karel Van den Meersche}
+\examples{
+# bceOutput is an example output based on bceInput
+
+plot(bceOutput)
+}
+
 \keyword{models}
 
