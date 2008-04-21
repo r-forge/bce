@@ -128,6 +128,6 @@ for (i in 1:nr)
 
 
 }
-\author{Karel Van de Meersche <k.vdmeersche@nioo.knaw.nl>, Karline Soetaert <k.soetaert@nioo.knaw.nl>}
+\author{Karel Van den Meersche <k.vdmeersche@nioo.knaw.nl>, Karline Soetaert <k.soetaert@nioo.knaw.nl>}
 \keyword{models}
 
