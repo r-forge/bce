@@ -217,7 +217,7 @@ BCE <- function(
 
           ## new posterior probability p2 (-log)
           logp2  <-  logProbabilityBCE(rat2,x2,init.list)
-          r <- exp(logp1-logp2 + logddirichlet2(x1,x2*(alfajmp-nalg)+1) - logddirichlet2(x2,x1*(alfajmp-nalg)+1))
+          r <- exp(logp2-logp1 + logddirichlet2(x1,x2*(alfajmp-nalg)+1) - logddirichlet2(x2,x1*(alfajmp-nalg)+1))
           
           ## METROPOLIS algorithm: select the new point? or stick to the old one? 
           if (r>=runif(1))
@@ -490,7 +490,7 @@ logprobabilityBCE <- function(RAT,        # ratio matrix
 
         ddat <- sum(dB.p,dB.r,na.rm=TRUE) /nst
 
-        logp  <-  - drat - ddat
+        logp  <-  drat + ddat
       }
       
       return(logp)
@@ -618,7 +618,7 @@ export.bce <- function(BCE,             # a bce object, output of the function b
           a <- aperm(mcmc$Rat)[,meanRat[i,]!=0,i]
           if (!is.null(dim(a))) pairs(a,upper.panel=panel.cor,pch=".")
         }
-      if (nst==1)
+      if (is.matrix(mcmc$X))
         {
           for(j in 1:nalg)
             {
@@ -653,12 +653,11 @@ export.bce <- function(BCE,             # a bce object, output of the function b
 plot.bce <- function(bce)               # bce object
   {with(bce,{
     
-    nalg <- ncol(X)
+    nalg <- nrow(Rat)
     npig <- ncol(Rat)
-    nst <- nrow(X)
-    algnames <- colnames(X)
+    algnames <- rownames(Rat)
     pignames <- colnames(Rat)
-    stnames <- rownames(X)
+    if (is.matrix(X)) nst <- 1 else {nst <- nrow(X); stnames <- rownames(X)}
 
     oldpar <- par(no.readonly=TRUE)
     par(mfrow=c(nalg,npig),mar=c(0,0,0,0),oma=c(0,0,1,0),ask=TRUE)
@@ -670,14 +669,20 @@ plot.bce <- function(bce)               # bce object
             plot(Rat[i,j,],type="l",xlab="",ylab="",xaxt="n",yaxt="n")
           }
       }
-    mtext("ratio matrix traces",outer=TRUE)
+    mtext("ratio matrix traces",outer=kTRUE)
+    
           
     par(mfcol=c(nalg,5),mar=c(0,0,0,0),oma=c(0,0,1,0),ask=TRUE)
-    for (i in 1:nst)
+    if (is.matrix(mcmc$X))
       {
         for(j in 1:nalg)
+          plot(X[i,j,],type="l",xlab="",ylab="",xaxt="n",yaxt="n")
+
+      } else {
+        for (i in 1:nst)
           {
-            plot(X[i,j,],type="l",xlab="",ylab="",xaxt="n",yaxt="n")
+            for(j in 1:nalg)
+              plot(X[i,j,],type="l",xlab="",ylab="",xaxt="n",yaxt="n")
           }
       }
     par(oldpar)
