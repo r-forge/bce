@@ -122,8 +122,8 @@ BCE <- function(
                 verbose  = TRUE,            # if TRUE, extra information is provided during the run of the function, such as extra warnings, elapsed time and expected time until the end of the MCMC 
                 initRat  = Rat,             # ratio matrix used to start the markov chain: default the initial ratio matrix
                 initX    = NULL,            # composition matrix used to start the markov chain: default the LSEI solution of Ax=B
-                userProb = NULL,     # posterior probability for a given ratio matrix and composition matrix: should be a function with 2 arguments RAT and X, and as returned value a number giving the -log posterior probability of ratio matrix RAT and composition matrix X. Dependence of the probability on the data should be incorporated in the function. 
-                confInt  = 2/3,   # confidence interval in output; because the distributions are not symmetrical, standard deviations are not a useful measure; instead, upper and lower boundaries of the given confidence interval are given. Default is 2/3 (equivalent to standard deviation), but a more or less stringent criterion can be used. 
+                userProb = NULL,            # posterior probability for a given ratio matrix and composition matrix: should be a function with 2 arguments RAT and X, and as returned value a number giving the -log posterior probability of ratio matrix RAT and composition matrix X. Dependence of the probability on the data should be incorporated in the function. 
+                confInt  = 2/3,             # confidence interval in output; because the distributions are not symmetrical, standard deviations are not a useful measure; instead, upper and lower boundaries of the given confidence interval are given. Default is 2/3 (equivalent to standard deviation), but a more or less stringent criterion can be used. 
                 export   = FALSE,           # if true, a list of variables and plots are exported to the specified filename in a folder "out". If a valid path, the list is exported to the location indicated by the path. 
                 filename = "BCE"            # filename for saved objects. 
                 )
@@ -170,7 +170,7 @@ BCE <- function(
       rat2 <- rat1
       x2 <- x1
       
-      p1 <- probabilityBCE(rat1,x1,init.list)
+      logp1 <- logProbabilityBCE(rat1,x1,init.list)
 
       ##=======================================##
       ## initialise mcmc objects
@@ -183,7 +183,7 @@ BCE <- function(
       
       mcmc.Rat <- array(dim=c(nalg,npig,outputlength),dimnames=list(algnames,pignames,NULL))
       mcmc.X   <- array(dim=c(nst,nalg,outputlength),dimnames=list(stnames,algnames,NULL)) 
-      mcmc.p   <- vector(length=outputlength)         
+      mcmc.logp   <- vector(length=outputlength)         
       naccepted <- 0
       init.time <- proc.time()
 
@@ -199,16 +199,16 @@ BCE <- function(
           rat2[] <- rnorm(lr,rat1,jmpRat.matrix)
 
           ## new posterior probability p2 (-log)
-          p2  <-  probabilityBCE(rat2,x2,init.list)
-          r <- exp(p1-p2 + logddirichlet2(x1,x2*(alfajmp-nalg)+1) - logddirichlet2(x2,x1*(alfajmp-nalg)+1))
+          logp2  <-  logProbabilityBCE(rat2,x2,init.list)
+          r <- exp(logp1-logp2 + logddirichlet2(x1,x2*(alfajmp-nalg)+1) - logddirichlet2(x2,x1*(alfajmp-nalg)+1))
           
           ## METROPOLIS algorithm: select the new point? or stick to the old one? 
           if (r>=runif(1))
             {
-              ## update x1, rat1, p1, naccepted
+              ## update x1, rat1, logp1, naccepted
               x1 <- x2
               rat1 <- rat2
-              p1 <- p2
+              logp1 <- logp2
               naccepted <- naccepted+1
             }
           
@@ -217,7 +217,7 @@ BCE <- function(
             {
               mcmc.Rat[,,i1] <- rat1
               mcmc.X[,,i1] <- x1
-              mcmc.p[i1] <- p1
+              mcmc.logp[i1] <- logp1
               i1 <- i1+1
               ou1 <- ou1+ou
               
@@ -237,13 +237,13 @@ BCE <- function(
       
       if (verbose) print(cat("number of accepted runs: ",naccepted," out of ",iter," (",100*naccepted/iter,"%) ",sep=""))
 
-      mcmc <- list(Rat=mcmc.Rat,X=mcmc.X,p=mcmc.p,naccepted=naccepted)
+      mcmc <- list(Rat=mcmc.Rat,X=mcmc.X,logp=mcmc.logp,naccepted=naccepted)
       class(mcmc) <- c("bce","list")
-      if (export != FALSE) export(mcmc,filename,input.list,export)
+      if (export) export(mcmc,filename,input.list)
       return(mcmc)                      # bce object: a list containing 4 elements:
                                         # - mcmc.Rat: array with dimension c(nrow(Rat),ncol(Rat),iter) containing the random walk values of the ratio matrix
                                         # - mcmc.X: array with dimension c(nrow(x),ncol(x),iter) containing the random walk values of the composition matrix
-                                        # - mcmc.p: vector with length iter containing the random walk values of the posterior probability
+                                        # - mcmc.logp: vector with length iter containing the random walk values of the posterior probability
                                         # - naccepted: integer indicating the number of runs that were accepted
     })}
 
@@ -422,13 +422,13 @@ init <- function(input.list)
 
 #############################################################################################
 
-probabilityBCE <- function(RAT,        # ratio matrix
+logprobabilityBCE <- function(RAT,        # ratio matrix
                             X,          # composition matrix
                             init.list)  # list with variables, output of function init(input.list)
   {
     with(init.list,{
 
-      if (!is.null(userProb)) p <- userProb(RAT,X) else {
+      if (!is.null(userProb)) logp <- log(userProb(RAT,X)) else {
         
         y <- X%*%RAT
 
@@ -472,10 +472,10 @@ probabilityBCE <- function(RAT,        # ratio matrix
 
         ddat <- sum(dB.p,dB.r,na.rm=TRUE) /nst
 
-        p  <-  - drat - ddat
+        logp  <-  - drat - ddat
       }
       
-      return(p)
+      return(logp)
     })
   }
 
@@ -488,15 +488,15 @@ summary.bce <- function(mcmc,           # a bce-object, output of the function b
     with(mcmc,{
 
       nalg <- dim(Rat)[1]
-      lr <- length(Rat)/length(p)
-      lx <- length(X)/length(p)
+      lr <- length(Rat)/length(logp)
+      lx <- length(X)/length(logp)
 
       firstx <- X[,,1]
       
-      w <- which.min(p)
+      w <- which.min(logp)
       bestrat <- Rat[,,w]
       bestx <- X[,,w]    
-      bestp <- p[w]
+      bestLogp <- logp[w]
       bestdat <- bestx%*%bestrat
 
       quantile1 <- function(x) quantile(x,probs=c((1-confInt)/2,1/2,(1+confInt)/2))
@@ -528,7 +528,7 @@ summary.bce <- function(mcmc,           # a bce-object, output of the function b
       return(list(firstX=firstx,        # x determined through least squares regression from the initial ratio matrix and the data matrix
                   bestRat=bestrat,      # ratio matrix for which the posterior probability is maximal
                   bestX=bestx,          # composition matrix for which the posterior probability is maximal
-                  bestp=bestp,          # maximal posterior probability
+                  bestLogp=bestLogp,    # maximal posterior probability
                   bestDat=bestdat,      # product of bestrat and bestx
                   meanRat=meanrat,      # means of the elements of the ratio matrix
                   sdRat=sdrat,          # standard deviation of the elements of the ratio matrix
@@ -550,30 +550,27 @@ summary.bce <- function(mcmc,           # a bce-object, output of the function b
 export <- function(x,...) UseMethod("export")
 export.bce <- function(BCE,             # a bce object, output of the function bce()
                        filename="BCE",  # filename of the exported file
-                       input.list=NULL, # a list of the arguments in bce() can be provided and saved as well. 
-                       path="out")      # path to where the files have to be saved; if absent, it will be created. Default to a folder "out" in the current working directory
+                       input.list=NULL) # a list of the arguments in bce() can be provided and saved as well. 
   {
-    dir.create(path,showWarnings=FALSE)
-
-    save(BCE,input.list,file=paste(path,"/",filename,sep=""))
+    save(BCE,input.list,file=filename)
 
     BCEsummary <- summary(BCE)
 
     with(c(BCE,BCEsummary),{
-      write.csv(firstx,paste(path,"/",filename,"-firstx.csv",sep=""))
-      write.csv(bestrat,paste(path,"/",filename,"-bestrat.csv",sep=""))
-      write.csv(bestx,paste(path,"/",filename,"-bestx.csv",sep=""))
-      write.csv(bestdat,paste(path,"/",filename,"-bestdat.csv",sep=""))
-      write.csv(meanrat,paste(path,"/",filename,"-meanrat.csv",sep=""))
-      write.csv(lbrat,paste(path,"/",filename,"-lbrat.csv",sep=""))
-      write.csv(ubrat,paste(path,"/",filename,"-ubrat.csv",sep=""))
-      write.csv(covrat,paste(path,"/",filename,"-covrat.csv",sep=""))
-      write.csv(meanx,paste(path,"/",filename,"-meanx.csv",sep=""))
-      write.csv(lbx,paste(path,"/",filename,"-lbx.csv",sep=""))
-      write.csv(ubx,paste(path,"/",filename,"-ubx.csv",sep=""))
-      write.csv(covx,paste(path,"/",filename,"-covx.csv",sep=""))
+      write.csv(firstx,paste(filename,"-firstx.csv",sep=""))
+      write.csv(bestrat,paste(filename,"-bestrat.csv",sep=""))
+      write.csv(bestx,paste(filename,"-bestx.csv",sep=""))
+      write.csv(bestdat,paste(filename,"-bestdat.csv",sep=""))
+      write.csv(meanrat,paste(filename,"-meanrat.csv",sep=""))
+      write.csv(lbrat,paste(filename,"-lbrat.csv",sep=""))
+      write.csv(ubrat,paste(filename,"-ubrat.csv",sep=""))
+      write.csv(covrat,paste(filename,"-covrat.csv",sep=""))
+      write.csv(meanx,paste(filename,"-meanx.csv",sep=""))
+      write.csv(lbx,paste(filename,"-lbx.csv",sep=""))
+      write.csv(ubx,paste(filename,"-ubx.csv",sep=""))
+      write.csv(covx,paste(filename,"-covx.csv",sep=""))
 
-      png(paste(path,"/",filename,"%03d.png",sep=""),width=1903,height=1345,pointsize=10)
+      png(paste(filename,"%03d.png",sep=""),width=1903,height=1345,pointsize=10)
       par(mfrow=c(4,6))
       
       nalg <- ncol(mcmc$X)
