@@ -38,25 +38,42 @@ logddirichlet2 <- function(x,alpha) sum((alpha - 1) * log(x)) - sum(lgamma(alpha
 
 ####################################################################################
 
-lsei1 <- function(A,                     # search x for which min||Ax-B||
-                 B,                     # 
-                 E,                     # Ex=F
-                 F,                     # Ex=F
-                 G,                     # Gx>H
-                 H)                     # Gx>H
-  {
-    if(!"quadprog"%in%.packages(all=TRUE))
-      {
-        print("the package quadprog has to be installed in order to run this program. please select a mirror site.")
-        install.packages("quadprog")
-      }
-    require(quadprog,quietly=TRUE)
+## lsei1 <- function(A,                     # search x for which min||Ax-B||
+##                  B,                     # 
+##                  E,                     # Ex=F
+##                  F,                     # Ex=F
+##                  G,                     # Gx>H
+##                  H)                     # Gx>H
+##   {
+##     if(!"quadprog"%in%.packages(all=TRUE))
+##       {
+##         print("the package quadprog has to be installed in order to run this program. please select a mirror site.")
+##         install.packages("quadprog")
+##       }
+##     require(quadprog,quietly=TRUE)
+## 
+##     dvec  <- t(A) %*% B
+##     Dmat  <- t(A) %*% A
+##     Amat  <- t(rbind(E,G))
+##     bvec  <- c(F,H)
+##     solve.QP(Dmat ,dvec, Amat , bvec, meq=1)$solution
+##   }
 
-    dvec  <- t(A) %*% B
-    Dmat  <- t(A) %*% A
-    Amat  <- t(rbind(E,G))
-    bvec  <- c(F,H)
-    solve.QP(Dmat ,dvec, Amat , bvec, meq=1)$solution
+lsei1 <- function(A,                     # search x for which min||Ax-B||
+                  B,                     # 
+                  E,                     # Ex=F
+                  F,                     # Ex=F
+                  G,                     # Gx>H
+                  H)                     # Gx>H
+  {
+    if(!"limSolve"%in%.packages(all=TRUE))
+      {
+        print("the package limSolve has to be installed in order to run this program. please select a mirror site.")
+        install.packages("limSolve")
+      }
+    require(limSolve,quietly=TRUE)
+
+    lsei(A,B,E,F,G,H)$X
   }
 
 
@@ -234,7 +251,8 @@ BCE <- function(
             }
           
         } # end mcmc loop
-      
+
+      if (dim(mcmc.X)[1]==1) {dim(mcmc.X) <- dim(mcmc.X)[2:3] ; rownames(mcmc.X) <- pignames}
       if (verbose) print(cat("number of accepted runs: ",naccepted," out of ",iter," (",100*naccepted/iter,"%) ",sep=""))
 
       mcmc <- list(Rat=mcmc.Rat,X=mcmc.X,logp=mcmc.logp,naccepted=naccepted)
@@ -259,7 +277,7 @@ init <- function(input.list)
 
       ## warnings and error messages
       if (ncol(Rat)!=ncol(Dat)) stop("ratio matrix and data matrix must have same number of columns")
-
+2
       ##===============================================##
       ## initialisations
       ##===============================================##
@@ -491,13 +509,12 @@ summary.bce <- function(mcmc,           # a bce-object, output of the function b
       lr <- length(Rat)/length(logp)
       lx <- length(X)/length(logp)
 
-      firstx <- X[,,1]
       
       w <- which.min(logp)
-      bestrat <- Rat[,,w]
-      bestx <- X[,,w]    
+
+      bestRat <- Rat[,,w]
       bestLogp <- logp[w]
-      bestdat <- bestx%*%bestrat
+      bestDat <- bestX%*%bestRat
 
       quantile1 <- function(x) quantile(x,probs=c((1-confInt)/2,1/2,(1+confInt)/2))
 
@@ -507,39 +524,50 @@ summary.bce <- function(mcmc,           # a bce-object, output of the function b
       ubrat <- quantilerat[3,,]
       sdrat <- apply(Rat,1:2,sd)
 
-      meanx <- rowMeans(X,dims=2)
-      quantilex <- apply(X,1:2,quantile1)
-      lbx <- quantilex[1,,]
-      ubx <- quantilex[3,,]
-      sdx <- apply(X,1:2,sd)
-      
+      if (is.matrix(X)) {
+        firstX <- X[,1]
+        bestX <- X[,w]
+        meanX <- rowMeans(X)
+        quantileX <- apply(X,1,quantile1)
+        lbX <- quantileX[1,]
+        ubX <- quantileX[3,]
+        sdX <- apply(X,1,sd)
+      } else{
+        firstX <- X[,,1]
+        bestX <- X[,,w]    
+        meanX <- rowMeans(X,dims=2)
+        quantileX <- apply(X,1:2,quantile1)
+        lbX <- quantileX[1,,]
+        ubX <- quantileX[3,,]
+        sdX <- apply(X,1:2,sd)
+      }
       if (all(sdrat==0)) covrat <- 0 else
-        {
-          covratnames <- vector(length=lr)
-          for (i in 1:lr) covratnames[i] <- paste("Rat(",(i-1)%%nalg+1,",",(i-1)%/%nalg+1,")",sep="")
-          covrat <- var(matrix(aperm(Rat,c(3,1,2)),ncol=lr,dimnames=list(NULL,covratnames))[,sdrat>1e-8],na.rm=TRUE)
-        }
+      {
+        covratnames <- vector(length=lr)
+        for (i in 1:lr) covratnames[i] <- paste("Rat(",(i-1)%%nalg+1,",",(i-1)%/%nalg+1,")",sep="")
+        covrat <- var(matrix(aperm(Rat,c(3,1,2)),ncol=lr,dimnames=list(NULL,covratnames))[,sdrat>1e-8],na.rm=TRUE)
+      }
 
-      covxnames <- vector(length=lx)
-      for (i in 1:lx) covxnames[i] <- paste("x(",(i-1)%/%nalg+1,",",(i-1)%%nalg+1,")",sep="")
-      covx <- var(matrix(aperm(X),ncol=lx,dimnames=list(NULL,covxnames)),na.rm=TRUE)
+      covXnames <- vector(length=lx)
+      for (i in 1:lx) covXnames[i] <- paste("x(",(i-1)%/%nalg+1,",",(i-1)%%nalg+1,")",sep="")
+      covX <- var(matrix(aperm(X),ncol=lx,dimnames=list(NULL,covXnames)),na.rm=TRUE)
       
       ## output
-      return(list(firstX=firstx,        # x determined through least squares regression from the initial ratio matrix and the data matrix
-                  bestRat=bestrat,      # ratio matrix for which the posterior probability is maximal
-                  bestX=bestx,          # composition matrix for which the posterior probability is maximal
+      return(list(firstX=firstX,        # X determined through least squares regression from the initial ratio matrix and the data matrix
+                  bestRat=bestRat,      # ratio matrix for which the posterior probability is maximal
+                  bestX=bestX,          # composition matrix for which the posterior probability is maximal
                   bestLogp=bestLogp,    # maximal posterior probability
-                  bestDat=bestdat,      # product of bestrat and bestx
+                  bestDat=bestDat,      # product of bestRat and bestX
                   meanRat=meanrat,      # means of the elements of the ratio matrix
                   sdRat=sdrat,          # standard deviation of the elements of the ratio matrix
                   lbRat=lbrat,          # lower boundary of the confidence interval of the elements of the ratio matrix
                   ubRat=ubrat,          # upper boundary of the confidence interval of the elements of the ratio matrix
                   covRat=covrat,        # covariance matrix of the elements of the ratio matrix
-                  meanX=meanx,          # means of the elements of the composition matrix
-                  sdX=sdx,              # standard deviation of the elements of the composition matrix
-                  lbX=lbx,              # lower boundary of the confidence interval of the elements of the composition matrix
-                  ubX=ubx,              # upper boundary of the confidence interval of the elements of the composition matrix
-                  covX=covx             # covariance matrix of the elements of the composition matrix
+                  meanX=meanX,          # means of the elements of the composition matrix
+                  sdX=sdX,              # standard deviation of the elements of the composition matrix
+                  lbX=lbX,              # lower boundary of the confidence interval of the elements of the composition matrix
+                  ubX=ubX,              # upper boundary of the confidence interval of the elements of the composition matrix
+                  covX=covX             # covariance matrix of the elements of the composition matrix
                   ))
     })
   } # end function summary.bce
@@ -557,53 +585,64 @@ export.bce <- function(BCE,             # a bce object, output of the function b
     BCEsummary <- summary(BCE)
 
     with(c(BCE,BCEsummary),{
-      write.csv(firstx,paste(filename,"-firstx.csv",sep=""))
-      write.csv(bestrat,paste(filename,"-bestrat.csv",sep=""))
-      write.csv(bestx,paste(filename,"-bestx.csv",sep=""))
-      write.csv(bestdat,paste(filename,"-bestdat.csv",sep=""))
-      write.csv(meanrat,paste(filename,"-meanrat.csv",sep=""))
-      write.csv(lbrat,paste(filename,"-lbrat.csv",sep=""))
-      write.csv(ubrat,paste(filename,"-ubrat.csv",sep=""))
-      write.csv(covrat,paste(filename,"-covrat.csv",sep=""))
-      write.csv(meanx,paste(filename,"-meanx.csv",sep=""))
-      write.csv(lbx,paste(filename,"-lbx.csv",sep=""))
-      write.csv(ubx,paste(filename,"-ubx.csv",sep=""))
-      write.csv(covx,paste(filename,"-covx.csv",sep=""))
+      write.csv(firstX,paste(filename,"-firstX.csv",sep=""))
+      write.csv(bestRat,paste(filename,"-bestRat.csv",sep=""))
+      write.csv(bestX,paste(filename,"-bestX.csv",sep=""))
+      write.csv(bestDat,paste(filename,"-bestDat.csv",sep=""))
+      write.csv(meanRat,paste(filename,"-meanRat.csv",sep=""))
+      write.csv(lbRat,paste(filename,"-lbRat.csv",sep=""))
+      write.csv(ubRat,paste(filename,"-ubRat.csv",sep=""))
+      write.csv(covRat,paste(filename,"-covRat.csv",sep=""))
+      write.csv(meanX,paste(filename,"-meanX.csv",sep=""))
+      write.csv(lbX,paste(filename,"-lbX.csv",sep=""))
+      write.csv(ubX,paste(filename,"-ubX.csv",sep=""))
+      write.csv(covX,paste(filename,"-covX.csv",sep=""))
 
       png(paste(filename,"%03d.png",sep=""),width=1903,height=1345,pointsize=10)
       par(mfrow=c(4,6))
       
-      nalg <- ncol(mcmc$X)
+      nalg <- nrow(mcmc$Rat)
       npig <- ncol(mcmc$Rat)
-      nst <- nrow(mcmc$X)
-      algnames <- colnames(mcmc$X)
+      nst <- nrow(bestDat)
+      algnames <- rownames(mcmc$Rat)
       pignames <- colnames(mcmc$Rat)
-      stnames <- rownames(mcmc$X)
+      stnames <- rownames(bestDat)
       
       for (i in 1:nalg)
         {
-          for (j in (1:npig)[meanrat[i,]!=0])
+          for (j in (1:npig)[meanRat[i,]!=0])
             {
               plot(mcmc$Rat[i,j,],type="l",main=paste("trace of",algnames[i],pignames[j]),xlab="",ylab="")
               hist(mcmc$Rat[i,j,],100,main=paste("histogram of",algnames[i],pignames[j]),xlab="")
             }
-          a <- aperm(mcmc$Rat)[,meanrat[i,]!=0,i]
+          a <- aperm(mcmc$Rat)[,meanRat[i,]!=0,i]
           if (!is.null(dim(a))) pairs(a,upper.panel=panel.cor,pch=".")
         }
-      
-      for (i in 1:nst)
+      if (nst==1)
         {
           for(j in 1:nalg)
             {
-              plot(mcmc$X[i,j,],type="l",main=paste("trace of",algnames[j],stnames[i]),xlab="",ylab="")
-              hist(mcmc$X[i,j,],100,main=paste("histogram of",algnames[j],stnames[i]),xlab="")
+              plot(mcmc$X[j,],type="l",main=paste("trace of",algnames[j],xlab="",ylab="")
+              hist(mcmc$X[j,],100,main=paste("histogram of",algnames[j],xlab="")
             }
-          a <- aperm(mcmc$X[i,1:nalg,])
-          if (!is.null(dim(a))) pairs(a,upper.panel=panel.cor,pch=".")
+              a <- aperm(mcmc$X[1:nalg,])
+              if (!is.null(dim(a))) pairs(a,upper.panel=panel.cor,pch=".")
+         
+        } else {
+          for (i in 1:nst)
+            {
+              for(j in 1:nalg)
+                {
+                  plot(mcmc$X[i,j,],type="l",main=paste("trace of",algnames[j],stnames[i]),xlab="",ylab="")
+                  hist(mcmc$X[i,j,],100,main=paste("histogram of",algnames[j],stnames[i]),xlab="")
+                }
+              a <- aperm(mcmc$X[i,1:nalg,])
+              if (!is.null(dim(a))) pairs(a,upper.panel=panel.cor,pch=".")
+            }
         }
       
       par(mfrow=c(1,1))
-      barplot(t(bestx),legend.text=algnames)
+      barplot(t(bestX),legend.text=algnames)
       
       dev.off()
     })
