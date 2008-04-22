@@ -656,34 +656,40 @@ plot.bce <- function(bce)               # bce object
     
     nalg <- nrow(Rat)
     npig <- ncol(Rat)
-    algnames <- rownames(Rat)
-    pignames <- colnames(Rat)
-    if (is.matrix(X)) nst <- 1 else {nst <- nrow(X); stnames <- rownames(X)}
+    algnames <- rownames(Rat); if (is.null(algnames)) algnames <- paste("taxon",1:nalg)
+    pignames <- colnames(Rat); if (is.null(pignames)) pignames <- paste("biomarker",1:npig)
+    if (is.matrix(X)) {nst <- 1; stnames <- NULL} else { nst <- nrow(X); stnames <- rownames(X)}
+    if (is.null(stnames)) stnames <- paste("sample",1:nst)
 
     oldpar <- par(no.readonly=TRUE)
-    par(mfrow=c(nalg,npig),mar=c(0,0,0,0),oma=c(0,0,1,0),ask=TRUE)
+    par(mfcol=c(nalg,5),mar=c(0,0,0,0),oma=c(0,0,1,0),ask=TRUE,family="serif")
 
-    for (i in 1:nalg)
+    for (j in 1:npig)
       {
-        for (j in 1:npig)
+        for (i in 1:nalg)
           {
-            plot(Rat[i,j,],type="l",xlab="",ylab="",xaxt="n",yaxt="n")
+            R <- Rat[i,j,]
+            Rr <- range(R)
+            if (all(Rr==0)) plot.new() else {
+              ylim <- matrix(c(1,-.2,0,1.2),2)%*%Rr
+              plot(R,type="l",xlab="",ylab="",xaxt="n",yaxt="n",ylim=ylim)
+              text(0,ylim[2],paste(algnames[i],pignames[j]),adj=0)
+            }
           }
       }
     mtext("ratio matrix traces",outer=TRUE)
     
           
     par(mfcol=c(nalg,5),mar=c(0,0,0,0),oma=c(0,0,1,0),ask=TRUE)
-    if (is.matrix(X))
+    for (i in 1:nst)
       {
         for(j in 1:nalg)
-          plot(X[j,],type="l",xlab="",ylab="",xaxt="n",yaxt="n")
-
-      } else {
-        for (i in 1:nst)
           {
-            for(j in 1:nalg)
-              plot(X[i,j,],type="l",xlab="",ylab="",xaxt="n",yaxt="n")
+            ifelse(is.matrix(X),x <- X[j,],x <- X[i,j,])
+            xr <- range(x)
+            ylim <- matrix(c(1,-.2,0,1.2),2)%*%xr
+            plot(x,type="l",xlab="",ylab="",xaxt="n",yaxt="n",ylim=ylim)
+            text(0,ylim[2],paste(stnames[i],algnames[j]),adj=0)
           }
       }
     par(oldpar)
