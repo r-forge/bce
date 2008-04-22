@@ -103,9 +103,8 @@ plot(X)
 #         jmpRat=.2*(.2*bceInput$Rat))
 #plot(X)
 # This run was saved in "bceOutput"
-X <- bceOutput 
 
-Sum <-summary(X)
+Sum <-summary(bceOutput)
 
 # show results as mean with ranges
 print(Sum$meanX)
@@ -129,7 +128,7 @@ for (i in 1:nr)
  }
 
 # show results as pairs plot
-pairs(X,sample=3,main="Station 3")
+pairs(bceOutput,sample=3,main="Station 3")
 
 }
 \author{Karel Van den Meersche <k.vdmeersche@nioo.knaw.nl>, Karline Soetaert <k.soetaert@nioo.knaw.nl>}

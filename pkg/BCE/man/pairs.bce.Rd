@@ -2,10 +2,10 @@
 \alias{pairs.bce}
 \title{A pairs plot of a BCE}
 \description{produces a pairs plots of the random walks of the BCE}
-\usage{pairs.bce(X,sample=1,gap=0,upper.panel = NA,
+\usage{pairs.bce(bce,sample=1,gap=0,upper.panel = NA,
 diag.panel = NA,...)}
 \arguments{
-  \item{X }{either a bce object or the random walk values (\code{X}) of the composition matrix}
+  \item{bce }{either a bce object or the random walk values (\code{X}) of the composition matrix}
   \item{sample }{the sample number for which the pairs plot is to be drawn}
   \item{gap }{Distance between subplots, in margin lines - a \code{pairs} parameter.}
   \item{upper.panel} {panel function to be used above the diagonal - the default writes the correlations} 

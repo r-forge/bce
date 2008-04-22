@@ -2,9 +2,9 @@
 \alias{summary.bce}
 \title{summary BCE}
 \description{basic statistics of a bce object}
-\usage{summary.bce(mcmc, confInt=2/3)}
+\usage{summary.bce(bce, confInt=2/3)}
 \arguments{
-  \item{mcmc }{a bce-object, output of the function bce()}
+  \item{bce }{a bce-object, output of the function bce()}
   \item{confInt }{confidence interval of values of composion matrix and ratio matrix}
 }
 \value{
