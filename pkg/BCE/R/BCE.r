@@ -622,12 +622,12 @@ export.bce <- function(BCE,             # a bce object, output of the function b
         {
           for(j in 1:nalg)
             {
-              plot(mcmc$X[j,],type="l",main=paste("trace of",algnames[j],xlab="",ylab="")
-              hist(mcmc$X[j,],100,main=paste("histogram of",algnames[j],xlab="")
+              plot(mcmc$X[j,],type="l",main=paste("trace of",algnames[j]),xlab="",ylab="")
+              hist(mcmc$X[j,],100,main=paste("histogram of",algnames[j]),xlab="")
             }
-              a <- aperm(mcmc$X[1:nalg,])
-              if (!is.null(dim(a))) pairs(a,upper.panel=panel.cor,pch=".")
-         
+          a <- aperm(mcmc$X[1:nalg,])
+          if (!is.null(dim(a))) pairs(a,upper.panel=panel.cor,pch=".")
+          
         } else {
           for (i in 1:nst)
             {
