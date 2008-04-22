@@ -662,7 +662,7 @@ plot.bce <- function(bce)               # bce object
     if (is.null(stnames)) stnames <- paste("sample",1:nst)
 
     oldpar <- par(no.readonly=TRUE)
-    par(mfcol=c(nalg,5),mar=c(0,0,0,0),oma=c(0,0,1,0),ask=TRUE,family="serif")
+    par(mfcol=c(nalg,5),mar=c(0,0,0,0),oma=c(0,0,1,0),ask=TRUE)
 
     for (j in 1:npig)
       {
