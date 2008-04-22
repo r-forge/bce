@@ -440,7 +440,7 @@ init <- function(input.list)
 
 #############################################################################################
 
-logprobabilityBCE <- function(RAT,        # ratio matrix
+logProbabilityBCE <- function(RAT,        # ratio matrix
                             X,          # composition matrix
                             init.list)  # list with variables, output of function init(input.list)
   {
@@ -499,11 +499,11 @@ logprobabilityBCE <- function(RAT,        # ratio matrix
 
 ##########################################################################################################
 
-summary.bce <- function(mcmc,           # a bce-object, output of the function bce()
+summary.bce <- function(bce,           # a bce-object, output of the function bce()
                         confInt=2/3) # confidence interval of values of composion matrix and ratio matrix
   ## extract best, mean, sd, upper and lower boundaries, and covariance
   {
-    with(mcmc,{
+    with(bce,{
 
       nalg <- dim(Rat)[1]
       lr <- length(Rat)/length(logp)
@@ -511,13 +511,11 @@ summary.bce <- function(mcmc,           # a bce-object, output of the function b
 
       
       w <- which.min(logp)
-
-      bestRat <- Rat[,,w]
       bestLogp <- logp[w]
-      bestDat <- bestX%*%bestRat
 
       quantile1 <- function(x) quantile(x,probs=c((1-confInt)/2,1/2,(1+confInt)/2))
 
+      bestRat <- Rat[,,w]
       meanrat <- rowMeans(Rat,dims=2)
       quantilerat <- apply(Rat,1:2,quantile1)
       lbrat <- quantilerat[1,,]
@@ -541,6 +539,9 @@ summary.bce <- function(mcmc,           # a bce-object, output of the function b
         ubX <- quantileX[3,,]
         sdX <- apply(X,1:2,sd)
       }
+
+      bestDat <- bestX%*%bestRat
+
       if (all(sdrat==0)) covrat <- 0 else
       {
         covratnames <- vector(length=lr)
@@ -601,31 +602,31 @@ export.bce <- function(BCE,             # a bce object, output of the function b
       png(paste(filename,"%03d.png",sep=""),width=1903,height=1345,pointsize=10)
       par(mfrow=c(4,6))
       
-      nalg <- nrow(mcmc$Rat)
-      npig <- ncol(mcmc$Rat)
+      nalg <- nrow(Rat)
+      npig <- ncol(Rat)
       nst <- nrow(bestDat)
-      algnames <- rownames(mcmc$Rat)
-      pignames <- colnames(mcmc$Rat)
+      algnames <- rownames(Rat)
+      pignames <- colnames(Rat)
       stnames <- rownames(bestDat)
       
       for (i in 1:nalg)
         {
           for (j in (1:npig)[meanRat[i,]!=0])
             {
-              plot(mcmc$Rat[i,j,],type="l",main=paste("trace of",algnames[i],pignames[j]),xlab="",ylab="")
-              hist(mcmc$Rat[i,j,],100,main=paste("histogram of",algnames[i],pignames[j]),xlab="")
+              plot(Rat[i,j,],type="l",main=paste("trace of",algnames[i],pignames[j]),xlab="",ylab="")
+              hist(Rat[i,j,],100,main=paste("histogram of",algnames[i],pignames[j]),xlab="")
             }
-          a <- aperm(mcmc$Rat)[,meanRat[i,]!=0,i]
+          a <- aperm(Rat)[,meanRat[i,]!=0,i]
           if (!is.null(dim(a))) pairs(a,upper.panel=panel.cor,pch=".")
         }
-      if (is.matrix(mcmc$X))
+      if (is.matrix(X))
         {
           for(j in 1:nalg)
             {
-              plot(mcmc$X[j,],type="l",main=paste("trace of",algnames[j]),xlab="",ylab="")
-              hist(mcmc$X[j,],100,main=paste("histogram of",algnames[j]),xlab="")
+              plot(X[j,],type="l",main=paste("trace of",algnames[j]),xlab="",ylab="")
+              hist(X[j,],100,main=paste("histogram of",algnames[j]),xlab="")
             }
-          a <- aperm(mcmc$X[1:nalg,])
+          a <- aperm(X[1:nalg,])
           if (!is.null(dim(a))) pairs(a,upper.panel=panel.cor,pch=".")
           
         } else {
@@ -633,10 +634,10 @@ export.bce <- function(BCE,             # a bce object, output of the function b
             {
               for(j in 1:nalg)
                 {
-                  plot(mcmc$X[i,j,],type="l",main=paste("trace of",algnames[j],stnames[i]),xlab="",ylab="")
-                  hist(mcmc$X[i,j,],100,main=paste("histogram of",algnames[j],stnames[i]),xlab="")
+                  plot(X[i,j,],type="l",main=paste("trace of",algnames[j],stnames[i]),xlab="",ylab="")
+                  hist(X[i,j,],100,main=paste("histogram of",algnames[j],stnames[i]),xlab="")
                 }
-              a <- aperm(mcmc$X[i,1:nalg,])
+              a <- aperm(X[i,1:nalg,])
               if (!is.null(dim(a))) pairs(a,upper.panel=panel.cor,pch=".")
             }
         }
@@ -669,14 +670,14 @@ plot.bce <- function(bce)               # bce object
             plot(Rat[i,j,],type="l",xlab="",ylab="",xaxt="n",yaxt="n")
           }
       }
-    mtext("ratio matrix traces",outer=kTRUE)
+    mtext("ratio matrix traces",outer=TRUE)
     
           
     par(mfcol=c(nalg,5),mar=c(0,0,0,0),oma=c(0,0,1,0),ask=TRUE)
-    if (is.matrix(mcmc$X))
+    if (is.matrix(X))
       {
         for(j in 1:nalg)
-          plot(X[i,j,],type="l",xlab="",ylab="",xaxt="n",yaxt="n")
+          plot(X[j,],type="l",xlab="",ylab="",xaxt="n",yaxt="n")
 
       } else {
         for (i in 1:nst)
