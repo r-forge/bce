@@ -12,6 +12,12 @@ diag.panel = NA,...)}
   \item{diag.panel} {panel function to be used on the diagonal - the default plots a histogram} 
   \item{...} {any other parameters passed to function \code{pairs}} 
 }
+
+\seealso{
+  \code{\link{BCE}}, \code{\link{summary.bce}},
+  \code{\link{plot.bce}}, \code{\link{export.bce}}
+}
+
 \examples{
 # bceOutput is an example output based on bceInput
 

@@ -25,6 +25,12 @@
   \item{ubX }{Upper boundary of the confidence interval of the elements of the composition matrix}
   \item{covX }{Covariance matrix of the elements of the composition matrix}
 }
+\seealso{
+  \code{\link{BCE}}, \code{\link{plot.bce}},
+  \code{\link{export.bce}}, \code{\link{pairs.bce}}
+}
+
+
 \author{Karel Van den Meersche}
 \examples{
 # bceOutput is an example output based on bceInput

@@ -142,7 +142,7 @@ BCE <- function(
                 userProb = NULL,            # posterior probability for a given ratio matrix and composition matrix: should be a function with 2 arguments RAT and X, and as returned value a number giving the -log posterior probability of ratio matrix RAT and composition matrix X. Dependence of the probability on the data should be incorporated in the function. 
                 confInt  = 2/3,             # confidence interval in output; because the distributions are not symmetrical, standard deviations are not a useful measure; instead, upper and lower boundaries of the given confidence interval are given. Default is 2/3 (equivalent to standard deviation), but a more or less stringent criterion can be used. 
                 export   = FALSE,           # if true, a list of variables and plots are exported to the specified filename in a folder "out". If a valid path, the list is exported to the location indicated by the path. 
-                filename = "BCE"            # filename for saved objects. 
+                file     = "BCE"            # objects are saved to this file. 
                 )
   
                                         # the mcmc function BCE assesses probability distributions of
@@ -257,7 +257,7 @@ BCE <- function(
 
       mcmc <- list(Rat=mcmc.Rat,X=mcmc.X,logp=mcmc.logp,naccepted=naccepted)
       class(mcmc) <- c("bce","list")
-      if (export) export(mcmc,filename,input.list)
+      if (export) export(mcmc,file,input.list)
       return(mcmc)                      # bce object: a list containing 4 elements:
                                         # - mcmc.Rat: array with dimension c(nrow(Rat),ncol(Rat),iter) containing the random walk values of the ratio matrix
                                         # - mcmc.X: array with dimension c(nrow(x),ncol(x),iter) containing the random walk values of the composition matrix
@@ -578,28 +578,28 @@ summary.bce <- function(bce,           # a bce-object, output of the function bc
 
 export <- function(x,...) UseMethod("export")
 export.bce <- function(BCE,             # a bce object, output of the function bce()
-                       filename="BCE",  # filename of the exported file
+                       file="BCE",  # the bce object is written to this file
                        input.list=NULL) # a list of the arguments in bce() can be provided and saved as well. 
   {
-    save(BCE,input.list,file=filename)
+    save(BCE,input.list,file=file)
 
     BCEsummary <- summary(BCE)
 
     with(c(BCE,BCEsummary),{
-      write.csv(firstX,paste(filename,"-firstX.csv",sep=""))
-      write.csv(bestRat,paste(filename,"-bestRat.csv",sep=""))
-      write.csv(bestX,paste(filename,"-bestX.csv",sep=""))
-      write.csv(bestDat,paste(filename,"-bestDat.csv",sep=""))
-      write.csv(meanRat,paste(filename,"-meanRat.csv",sep=""))
-      write.csv(lbRat,paste(filename,"-lbRat.csv",sep=""))
-      write.csv(ubRat,paste(filename,"-ubRat.csv",sep=""))
-      write.csv(covRat,paste(filename,"-covRat.csv",sep=""))
-      write.csv(meanX,paste(filename,"-meanX.csv",sep=""))
-      write.csv(lbX,paste(filename,"-lbX.csv",sep=""))
-      write.csv(ubX,paste(filename,"-ubX.csv",sep=""))
-      write.csv(covX,paste(filename,"-covX.csv",sep=""))
+      write.csv(firstX,paste(file,"-firstX.csv",sep=""))
+      write.csv(bestRat,paste(file,"-bestRat.csv",sep=""))
+      write.csv(bestX,paste(file,"-bestX.csv",sep=""))
+      write.csv(bestDat,paste(file,"-bestDat.csv",sep=""))
+      write.csv(meanRat,paste(file,"-meanRat.csv",sep=""))
+      write.csv(lbRat,paste(file,"-lbRat.csv",sep=""))
+      write.csv(ubRat,paste(file,"-ubRat.csv",sep=""))
+      write.csv(covRat,paste(file,"-covRat.csv",sep=""))
+      write.csv(meanX,paste(file,"-meanX.csv",sep=""))
+      write.csv(lbX,paste(file,"-lbX.csv",sep=""))
+      write.csv(ubX,paste(file,"-ubX.csv",sep=""))
+      write.csv(covX,paste(file,"-covX.csv",sep=""))
 
-      png(paste(filename,"%03d.png",sep=""),width=1903,height=1345,pointsize=10)
+      png(paste(file,"%03d.png",sep=""),width=1903,height=1345,pointsize=10)
       par(mfrow=c(4,6))
       
       nalg <- nrow(Rat)
