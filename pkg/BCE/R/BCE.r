@@ -9,16 +9,16 @@
 
 
 rescaleRows <- function (A,                 # matrix or dataframe to be row-rescaled: rowSums(A[rescale])=1
-                         rescale=1:ncol(A)) # vector containing indices of the columns that should be included in the normalisation
+                         columns=1:ncol(A)) # vector containing indices of the columns that should be included in the normalisation
   {
-    if (is.null(rescale)) return(A)
+    if (is.null(columns)) return(A)
     if (nrow(A)==1)
       {
-        R <- sum(A[,rescale])
+        R <- sum(A[,columns])
       } else {
-        R <- rowSums(A[,rescale])
+        R <- rowSums(A[,columns])
       }
-    A[R>0,rescale]<-A[R>0,rescale]/R[R>0]
+    A[R>0,columns]<-A[R>0,columns]/R[R>0]
     A
   } # rescaled dataframe
 
