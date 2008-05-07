@@ -132,7 +132,7 @@ confInt = 2/3, export = FALSE, file = "BCE")}
   tuned to obtain such behaviour:
 
   \itemize{
-    \item{\bold{jump length}} {The jump length determines how big the jumps are
+    \item{\bold{jump length} }{The jump length determines how big the jumps are
     for each step in the random walk. A longer jump length will make you
     jump around faster in the parameter space, but acceptance of new
     points can get very low. Smaller jump lengths increase the
@@ -156,7 +156,7 @@ confInt = 2/3, export = FALSE, file = "BCE")}
     values) will be influenced. You want this mixing rate to be as high
     as possible, whilst maintaining enough accepted points. }
 
-    \item{\bold{burninlength}} {The program uses the solution of lsei using the
+    \item{\bold{burninlength} }{The program uses the solution of lsei using the
     original ratio matrix as starting values for the MCMC. This might in
     some cases be far from the optimal solution, and the MCMC algorithm
     will start with moving towards this optimal solution. This is called
@@ -167,7 +167,7 @@ confInt = 2/3, export = FALSE, file = "BCE")}
     '\code{burninlength}' cycles will not be written to the output. Look
     at some plots to determine if you need to specify a burnin length.}
 
-    \item{\bold{iter}} {the number of iterations: start with 10000 runs
+    \item{\bold{iter} }{the number of iterations: start with 10000 runs
     or less; check the output and estimate how many runs you will need
     to get a random pattern in the output.}
   }

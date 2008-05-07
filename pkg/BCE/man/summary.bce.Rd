@@ -2,10 +2,12 @@
 \alias{summary.bce}
 \title{summary BCE}
 \description{basic statistics of a bce object}
-\usage{summary.bce(bce, confInt=2/3)}
+\usage{summary.bce(object, confInt=2/3,...)}
 \arguments{
-  \item{bce }{a bce-object, output of the function bce()}
-  \item{confInt }{confidence interval of values of composion matrix and ratio matrix}
+  \item{object }{a bce-object, output of the function bce()}
+  \item{confInt }{confidence interval of values of composion matrix and
+    ratio matrix}
+  \item{... }{additional arguments affecting the summary produced}
 }
 \value{
   a list containing:

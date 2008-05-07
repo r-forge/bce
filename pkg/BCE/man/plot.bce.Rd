@@ -2,9 +2,10 @@
 \alias{plot.bce}
 \title{plot BCE}
 \description{produces summary plots of the random walks of the BCE; these are intended for inspection only}
-\usage{plot.bce(bce)}
+\usage{plot.bce(x,...)}
 \arguments{
-  \item{bce }{bce object}
+  \item{x }{bce object}
+  \item{... }{additional arguments}
 }
 
 \details{

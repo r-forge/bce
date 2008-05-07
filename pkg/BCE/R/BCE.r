@@ -38,42 +38,23 @@ logddirichlet2 <- function(x,alpha) sum((alpha - 1) * log(x)) - sum(lgamma(alpha
 
 ####################################################################################
 
-## lsei1 <- function(A,                     # search x for which min||Ax-B||
-##                  B,                     # 
-##                  E,                     # Ex=F
-##                  F,                     # Ex=F
-##                  G,                     # Gx>H
-##                  H)                     # Gx>H
-##   {
-##     if(!"quadprog"%in%.packages(all=TRUE))
-##       {
-##         print("the package quadprog has to be installed in order to run this program. please select a mirror site.")
-##         install.packages("quadprog")
-##       }
-##     require(quadprog,quietly=TRUE)
-## 
-##     dvec  <- t(A) %*% B
-##     Dmat  <- t(A) %*% A
-##     Amat  <- t(rbind(E,G))
-##     bvec  <- c(F,H)
-##     solve.QP(Dmat ,dvec, Amat , bvec, meq=1)$solution
-##   }
-
 lsei1 <- function(A,                     # search x for which min||Ax-B||
-                  B,                     # 
-                  E,                     # Ex=F
-                  F,                     # Ex=F
-                  G,                     # Gx>H
-                  H)                     # Gx>H
+                 B,                     # 
+                 E,                     # Ex=F
+                 F,                     # Ex=F
+                 G,                     # Gx>H
+                 H)                     # Gx>H
   {
-    if(!"limSolve"%in%.packages(all=TRUE))
-      {
-        print("the package limSolve has to be installed in order to run this program. please select a mirror site.")
-        install.packages("limSolve")
-      }
-    require(limSolve,quietly=TRUE)
+    require(quadprog,quietly=TRUE)
 
-    lsei(A,B,E,F,G,H)$X
+    dvec  <- t(A) %*% B
+    Dmat  <- t(A) %*% A
+    Amat  <- t(rbind(E,G))
+    bvec  <- c(F,H)
+    solve.QP(Dmat ,dvec, Amat , bvec, meq=1)$solution
+
+    ## require(limSolve,quietly=TRUE)
+    ## lsei(A,B,E,F,G,H)$X
   }
 
 
@@ -499,11 +480,12 @@ logProbabilityBCE <- function(RAT,        # ratio matrix
 
 ##########################################################################################################
 
-summary.bce <- function(bce,           # a bce-object, output of the function bce()
-                        confInt=2/3) # confidence interval of values of composion matrix and ratio matrix
+summary.bce <- function(object,           # a bce-object, output of the function bce()
+                        confInt=2/3, # confidence interval of values of composion matrix and ratio matrix
+                        ...)            # additional arguments affecting the summary produced
   ## extract best, mean, sd, upper and lower boundaries, and covariance
   {
-    with(bce,{
+    with(object,{
 
       nalg <- dim(Rat)[1]
       lr <- length(Rat)/length(logp)
@@ -577,10 +559,12 @@ summary.bce <- function(bce,           # a bce-object, output of the function bc
 ##########################################################################################
 
 export <- function(x,...) UseMethod("export")
-export.bce <- function(BCE,             # a bce object, output of the function bce()
+export.bce <- function(x,             # a bce object, output of the function bce()
                        file="BCE",  # the bce object is written to this file
-                       input.list=NULL) # a list of the arguments in bce() can be provided and saved as well. 
+                       input.list=NULL, # a list of the arguments in bce() can be provided and saved as well.
+                       ...)             # additional arguments
   {
+    BCE <- x
     save(BCE,input.list,file=file)
 
     BCEsummary <- summary(BCE)
@@ -651,8 +635,8 @@ export.bce <- function(BCE,             # a bce object, output of the function b
 
 #############################################################################################
 
-plot.bce <- function(bce)               # bce object
-  {with(bce,{
+plot.bce <- function(x,...)               # bce object
+  {with(x,{
     
     nalg <- nrow(Rat)
     npig <- ncol(Rat)
