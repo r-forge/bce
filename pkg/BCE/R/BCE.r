@@ -45,16 +45,16 @@ lsei1 <- function(A,                     # search x for which min||Ax-B||
                  G,                     # Gx>H
                  H)                     # Gx>H
   {
-    require(quadprog,quietly=TRUE)
+    ## require(quadprog,quietly=TRUE)
 
-    dvec  <- t(A) %*% B
-    Dmat  <- t(A) %*% A
-    Amat  <- t(rbind(E,G))
-    bvec  <- c(F,H)
-    solve.QP(Dmat ,dvec, Amat , bvec, meq=1)$solution
+    ## dvec  <- t(A) %*% B
+    ## Dmat  <- t(A) %*% A
+    ## Amat  <- t(rbind(E,G))
+    ## bvec  <- c(F,H)
+    ## solve.QP(Dmat ,dvec, Amat , bvec, meq=1)$solution
 
-    ## require(limSolve,quietly=TRUE)
-    ## lsei(A,B,E,F,G,H)$X
+    require(limSolve,quietly=TRUE)
+    lsei(A,B,E,F,G,H)$X
   }
 
 
