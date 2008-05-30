@@ -172,6 +172,12 @@ confInt = 2/3, export = FALSE, file = "BCE")}
     to get a random pattern in the output.}
   }
 }
+
+\references{
+  Van den Meersche, K., K. Soetaert and J.J. Middelburg (2008) \emph{A
+    Bayesian compositional estimator for microbial taxonomy
+    based on biomarkers}, Limnology and Oceanography Methods 6, 190-199
+  }
  
 \seealso{
   \code{\link{summary.bce}}, \code{\link{plot.bce}},
