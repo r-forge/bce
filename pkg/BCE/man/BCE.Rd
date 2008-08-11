@@ -57,12 +57,13 @@ confInt = 2/3, export = FALSE, file = "BCE")}
     to the initial ratio matrix}
   \item{initX }{composition matrix used to start the markov chain:
     default the LSEI solution of Ax=B}
-  \item{userProb }{posterior probability for a given ratio matrix and
-    composition matrix: should be a function with 2 arguments RAT and X,
-    and as returned value a number giving the -log posterior probability
-    of ratio matrix RAT and composition matrix X.  Dependence of the
-    probability on the data should be incorporated in the function. If not
-    specified, the default probability distribution is the gamma function}
+  \item{userProb }{function taking two arguments: ratio matrix RAT and
+    composition matrix X, and returning the posterior probability.
+    Dependence of the probability on the data should be incorporated in
+    the function. If not specified, the default probability distribution
+    is the product of a non-informative distribution on the composition
+    matrix, and gamma distributions for the ratio matrix and the data
+    given the model output. }
   \item{confInt }{confidence interval in output; because the
     distributions may not be symmetrical, standard deviations are not
     always a useful measure; instead, upper and lower boundaries of the
