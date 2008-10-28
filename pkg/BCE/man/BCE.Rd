@@ -81,7 +81,7 @@ confInt = 2/3, export = FALSE, file = "BCE")}
   elements of a taxonomical composition matrix \code{X} and a ratio
   matrix \code{Rat} for which:
 
-  \deqn{X\%*\%Rat \simeq Dat}
+  \deqn{X\%*\%Rat \simeq Dat}{X\%*\%Rat ~= Dat}
   
   It does this by returning \code{iter} samples for X and Rat, organized
   in three-dimensional arrays. The input

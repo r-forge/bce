@@ -53,7 +53,7 @@ lsei1 <- function(A,                     # search x for which min||Ax-B||
     ## bvec  <- c(F,H)
     ## solve.QP(Dmat ,dvec, Amat , bvec, meq=1)$solution
 
-    require(limSolve,quietly=TRUE)
+    ## require(limSolve,quietly=TRUE)
     lsei(A,B,E,F,G,H)$X
   }
 
