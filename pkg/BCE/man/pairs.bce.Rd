@@ -8,9 +8,9 @@ diag.panel = NA,...)}
   \item{x }{either a bce object or the random walk values (\code{X}) of the composition matrix}
   \item{sample }{the sample number for which the pairs plot is to be drawn}
   \item{gap }{Distance between subplots, in margin lines - a \code{pairs} parameter.}
-  \item{upper.panel} {panel function to be used above the diagonal - the default writes the correlations} 
-  \item{diag.panel} {panel function to be used on the diagonal - the default plots a histogram} 
-  \item{...} {any other parameters passed to function \code{pairs}} 
+  \item{upper.panel}{panel function to be used above the diagonal - the default writes the correlations}
+  \item{diag.panel}{panel function to be used on the diagonal - the default plots a histogram}
+  \item{...}{any other parameters passed to function \code{pairs}}
 }
 
 \seealso{
