@@ -492,7 +492,7 @@ summary.bce <- function(object,           # a bce-object, output of the function
       lx <- length(X)/length(logp)
 
       
-      w <- which.min(logp)
+      w <- which.max(logp)
       bestLogp <- logp[w]
 
       quantile1 <- function(x) quantile(x,probs=c((1-confInt)/2,1/2,(1+confInt)/2))
