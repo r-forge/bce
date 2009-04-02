@@ -11,7 +11,7 @@
   A typically contains biomarker concentrations for several taxonomic groups,
   and B field measurements of the same biomarkers. X is then an estimate
   of the taxonomic composition of the field sample.}
-\usage{tlsce(A,B,Wa=NULL,optimizationfunction="nlminb",A_init=A,Xratios=TRUE,...)}
+\usage{tlsce(A,B,Wa=NULL,optimizationfunction="nlminb",A_init=A,...)}
 \arguments{
   \item{A }{a matrix or data frame. If A contains biomarker data for
     taxonomic groups, the biomarkers have to be organized per row, and
@@ -30,17 +30,11 @@
   \item{A_init }{a matrix with the same structure as A. a general,
     non-linear optimization routine (default \code{nlminb}) is used to
     minimize the sum of squared residuals of A versus the fitted matrix
-    \code{A_fit} (see value). This optimization routine requires a set of
+    A_fit (see falue). This optimization routine requires a set of
     starting values, by default the non-zero elements of A. This
     provides a good fit, but when in doubt about the convergence of the
     algorithm, one can provide different starting values for the
-    optimization routine in \code{A_init}.}
-  \item{Xratios }{ if \code{TRUE}, the column sums of X have to be 1. This is
-    the case if A and B are both expressed as biomarker concentrations
-    per unit of biomass. If \code{Xratios=FALSE}, A needs pigment
-    concentrations per biomass unit, B has pigment concentrations per
-    sample, and X will be expressed in biomass units per sample. The
-    requirement that the colSums of X have to be 1, can be dropped.}
+    optimization routine in A_init.}
   \item{...}{Arguments to be passed to the optimization function in
     use.}
 }
@@ -59,7 +53,7 @@
   \item{A_fit }{ Array with dimension c(nrow(\code{X}),ncol(\code{X}),\code{iter}) containing the random walk values of the composition matrix \code{X}}
   \item{B_fit }{ vector with length \code{iter} containing the random}
   \item{solutionNorms }{a vector of 3 values: the value of the minimised quadratic function at
-    the solution, in this case \code{sum((A_fit-A)*Wa)^2 + (B_fit-B)^2)}, and the
+    the solution, in this case sum((A_fit-A)*Wa)^2 + (B_fit-B)^2), and the
     shares of this value attributed to A and to B}
   \item{convergence }{An integer code. '0' indicates successful convergence.}
 }
