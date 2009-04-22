@@ -1,0 +1,4 @@
+export(plfa, plotchrom, plfa.accept)
+
+S3method("plot",  "chrom")
+S3method("edit",  "chrom")
