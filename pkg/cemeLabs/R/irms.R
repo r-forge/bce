@@ -13,8 +13,8 @@ readirms <- function(filename, minarea=0) {
   if (ncol(data) != 41)
     stop("error in readirms: should be in csv format, separated with ; or , and 41 columns")
 
-  data <- data[,c(2,3,7,16,35)]
-  names(data) <- c("number","component","time","area","d13c12cvsvpdb")
+  data <- data[,c(2,3,7,16,35,38)]
+  names(data) <- c("number","component","time","area","d13C","d18O")
   
 # ALLnames <- c("filename","number","component","masterpeak","refname",
 #     "start","time","end","width","ampl44","ampl45","ampl46","bgd44",

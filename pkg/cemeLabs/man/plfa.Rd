@@ -123,9 +123,17 @@ diagnostics(x)
 \examples{
   PLFA <- plfa(input=fa.data, qty_standard=2.01,
                volume_chlor = 15, weight_chlor=20)
-  plot(PLFA, xlab="ECL", ylab="peak area", main="plfa dataset",
+
+  plot(PLFA, xlab="ECL", yvar="concentration", ylab="Conc", main="plfa initial",
+       writelabels=TRUE)
+  PLFA <- chrom.accept(PLFA)
+  plot(PLFA, xlab="ECL", yvar="concentration", ylab="Conc", main="plfa cleaned",
        writelabels=TRUE)
   diagnostics(PLFA)
+
+#  IRMS <- irms(input=irms.data, qty_standard=2.01,
+#               volume_chlor = 15, weight_chlor=20)
+
 }
 
 \keyword{utilities}

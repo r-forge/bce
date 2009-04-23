@@ -5,12 +5,15 @@
 chrom.plot <- function(x, xvar="time", yvar="area", label="Name",
           marker = NULL, writelabels =FALSE, ...) {
 
-  i <- match(xvar,names(x))
-  if (is.na(i)) stop ("cannot plot chromatogram; xvar not present in input")
+  i <- NA
+  if (is.character(xvar)) i <- match(xvar,names(x)) else i<-xvar
+  
+  if (!is.numeric(i)) stop ("cannot plot chromatogram; xvar not present in input")
   X <- x[,i[1]]
 
-  i <- match(yvar,names(x))
-  if (is.na(i)) stop ("cannot plot chromatogram; yvar not present in input")
+  i <- NA
+  if (is.character(yvar)) i <- match(yvar,names(x)) else i<-yvar
+  if (!is.numeric(i)) stop ("cannot plot chromatogram; yvar not present in input")
   Y <- x[,i[1]]
 
   ylim <- range(Y)

@@ -1,7 +1,7 @@
 \name{fa.data}
 \docType{data}
 \alias{fa.data}
-\alias{fa.data2}
+\alias{irms.data}
 \title{
   Data sets
 }
@@ -13,6 +13,7 @@
 
 \usage{
 fa.data
+irms.data
 
 }
 
@@ -23,7 +24,13 @@ fa.data
 
 \examples{
 fa.data
-chrom.plot(fa.data)
+chrom.plot(fa.data, xlab="ECL", ylab="peak area", main="plfa dataset",
+          writelabels=TRUE)
+
+chrom.plot(irms.data, xlab="ECL", ylab="peak area", main="irms dataset")
+chrom.plot(irms.data, yvar = "d13C",xlab="ECL", ylab="d13C", main="irms dataset")
+chrom.plot(irms.data, yvar = "d18O",xlab="ECL", ylab="d18O", main="irms dataset")
+
 }
 \references{
 }

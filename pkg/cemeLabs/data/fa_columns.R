@@ -34,12 +34,7 @@ name = c(
 )
 
 # This is until the irms data become available
-irms.bpx70 <- fa.bpx70
+load("irms.Rdata")
+load("irmsdata.Rdata")
+load("fa.Rdata")
 
-fa.zb5 <- read.csv("zb5.csv",header=TRUE,as.is=TRUE,strip.white=TRUE)
-
-fa.apolar <- read.csv("apolar.csv",header=TRUE,as.is=TRUE,strip.white=TRUE)
-
-fa.polar1 <- read.csv("polar1.csv",header=TRUE,as.is=TRUE,strip.white=TRUE)
-
-fa.polar2 <- read.csv("polar2.csv",header=TRUE,as.is=TRUE,strip.white=TRUE)
