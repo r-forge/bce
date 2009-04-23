@@ -2,8 +2,8 @@
 # ==============================================================================
 # plot a chromatogram
 # ==============================================================================
-plotchrom <- function(x, xvar="time", yvar="area", label="Name", marker = NULL,
-          writelabels =FALSE, ...) {
+chrom.plot <- function(x, xvar="time", yvar="area", label="Name",
+          marker = NULL, writelabels =FALSE, ...) {
 
   i <- match(xvar,names(x))
   if (is.na(i)) stop ("cannot plot chromatogram; xvar not present in input")

@@ -33,6 +33,8 @@ name = c(
                "C22:6w3")
 )
 
+# This is until the irms data become available
+irms.bpx70 <- fa.bpx70
 
 fa.zb5 <- read.csv("zb5.csv",header=TRUE,as.is=TRUE,strip.white=TRUE)
 

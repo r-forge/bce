@@ -35,7 +35,9 @@ Includes
 
   \code{\link{plfa}}, phospholipid-derived fatty acid analysis
   
-  \code{\link{plotchrom}}, plot a chromatogram
+  \code{\link{irms}}, phospholipid-derived fatty acid isotopic data analysis
+
+  \code{\link{chrom.plot}}, plot a chromatogram
 
 }
 
@@ -43,7 +45,7 @@ Includes
 \dontrun{
 ## show examples (see respective help pages for details)
 example(plfa)
-example(plotchrom)
+example(chrom.plot)
 
 ## run demos
 demo("plfa") # nog te maken

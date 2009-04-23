@@ -1,4 +1,4 @@
-export(plfa, plotchrom, plfa.accept)
+export(plfa, irms, chrom.plot, chrom.accept, diagnostics)
 
 S3method("plot",  "chrom")
 S3method("edit",  "chrom")

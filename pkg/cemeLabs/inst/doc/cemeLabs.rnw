@@ -46,8 +46,9 @@ The Netherlands
   \R package \c contains utilities to convert the files resulting from
   lab analyses performed in NIOO-CEME.
   
-  To date, it only contains functions to analyse fatty acid chromatogram data.
-  These functions are meant as an alternative to the EXCEL spreadsheet with
+  To date, it contains functions to analyse fatty acid chromatogram data.
+  
+  These R-functions are meant as an alternative to the EXCEL spreadsheet with
   VBA macro originally developed by Pieter van Rijswijk.
   
 }
@@ -88,20 +89,23 @@ options(width=75)
 \maketitle
 
 \section{Introduction}
-  \R-package \c has been designed as a tool to convert some files from
+  \R-package \c is a tool, running in \R to convert files from
   the analysis lab at NIOO-CEME in a more suitable format.
   
-  To date it only contains:
+  It contains:
   \begin{itemize}
     \item plfa, a utility function to convert chromatogram data from the
       GC-FID carlo erba HRGC mega 2 GC.
+    \item irms, a utility function to convert chromatogram data from the
+      gas-chromatograph combustion interface isotope-ratio mass spectrometer
+     (GC-c-IRMS)
    \end{itemize}
 
 \section{plfa data}
-  \subsection{Preparing input}
+  \subsection{Preparing Input}
 
-  The GC-FID carlo erba HRGC mega 2 GC instrument produces a binary file,
-  which is processed with dedicated software and produces an EXCEL spreadsheet
+  The GC-FID instrument produces a binary file, which is processed with
+  dedicated software and produces an EXCEL spreadsheet
   (see \ref{fig:excel}).
   
   To be used with the \code{plfa} R-function this spreadsheet has to be
@@ -132,10 +136,10 @@ line below the column header; this should be exported as a csv file.}
 \label{fig:csv}
 \end{figure}
 
-  \subsection{Column input data}
+  \subsection{Analytical Column Input Data}
 
-  In addition to the chromatography column used, input of the FAME column used
-  need also to be present.
+  In addition to the input data, the analytical column used need also to
+  be given.
   
   The following columns are included:
   \begin{itemize}
@@ -143,28 +147,51 @@ line below the column header; this should be exported as a csv file.}
     \item \code{fa.zb5}, the ZB-5 column (GC-05 SSL LV); date March 2008
     \item \code{fa.apolar}, the "a-polar" data
     \item \code{fa.polar1}, the "polar bpx70" data by Eric Boschker
-    \item \code{fa.polar2}, the "polar bpx70" data by Marco Houttekamer; date nov 2004
+    \item \code{fa.polar2}, the "polar bpx70" data by Marco Houttekamer;
+      date nov 2004
    \end{itemize}
 
-  \subsection{Analysing the input data}
+\section{irms data}
+  \subsection{Preparing Input}
+  The input for the irms data analysis needs to be presented as a \emph{csv}
+  file, which can be exported based on the excel file (save as *.csv).
+  
+  \subsection{Analytical Column Input Data}
+  For the irms input data, the following analytical columns are available:
 
-  Function \code{plfa} analyses the input data. It is defined as:
+  \begin{itemize}
+    \item \code{irms.bpx70}, the BPX70 (GC-04 PTV); date ????
+    \item ????
+   \end{itemize}
+
+\section{Analysing the Chromatogram Data}
+
+\subsection{Functions plfa and irms}
+  Functions \code{plfa} and \code{irms} analyse the input data.
+  They are very similar and defined as:
   
   \begin{verbatim}
-plfa(input, fa = fa.bpx70, time_standard = c(17.045,31.155,41.288),
+plfa(input, fa.ref = fa.bpx70, time_standard = c(17.045,31.155,41.288),
   ecl_standard = c(12,16,19), qty_standard,
   qty_sample = 1, volume_chlor, weight_chlor,
-  int_standard = 0.02, int_ecl = int_standard)
-
+  int_standard = 0.02, int_ecl = int_standard,  minarea = 0)
   \end{verbatim}
 
+  and
+  \begin{verbatim}
+irms(input, irms.ref = irms.bpx70,
+  time_standard = c(879.4000244,1654.3,2248.1),
+  ecl_standard = c(12,16,19), qty_standard,
+  qty_sample = 1, volume_chlor, weight_chlor,
+  int_standard = 0.02, int_ecl = int_standard, minarea = 0)
+  \end{verbatim}
+  
   where:
   \begin{itemize}
     \item input contains the name of a \emph{csv} input file or a data.frame
-      with a previously loaded input file
-    \item fa is the name of the column used,
-     one of \code{fa.bpx70}, \code{fa.zb5}, \code{fa.apolar}, \code{fa.polar1},
-     or \code{fa.polar2}. The default is the bpx70 column
+      with a previously loaded input file (see previous sections)
+    \item fa.ref and irms.ref is the name of the reference column used.
+      The default is the bpx70 column
     \item time\_standard, the retention times of the standard
     \item ecl\_standard, the standard equivalent chain length
     \item qty\_standard, the quantity of the standard
@@ -175,6 +202,7 @@ plfa(input, fa = fa.bpx70, time_standard = c(17.045,31.155,41.288),
       with which the standard peaks are distinguished
     \item int\_ecl, the precision or interval in equivalent chain length units
       with which the other peaks are distinguished
+    \item minarea,  the minimal area below which the peaks are ignored
   \end{itemize}
   
   For example, in the following code, a data set is first read from file:
@@ -195,13 +223,15 @@ set at 0.02.
                volume_chlor = 15, weight_chlor=20)
   warnings()
 @
+\subsection{Troubleshooting ambiguous peaks}
+
 The function complains that some peaks cannot unambiguously be attributed to
-certain plfas and need your input.
+a certain fatty acid and need your input.
 
 There are two options when that happens:
 \begin{itemize}
   \item you accept the defaults, as already present in the input file
-    (not recommended). You do this by running function \code{plfa.default}.
+    (not recommended). You do this by running function \code{chrom.default}.
   \item you go through all problems manually, using the \code{edit} command.
 \end{itemize}
 
@@ -210,26 +240,30 @@ We first show how to run the \code{edit} command:
 PLFA <- edit(PLFA)
 \end{verbatim}
 
-Note that by assigning the edited version to PLFA,
-the edited version will overwrite the existing version
-(and this is what you want).
+Note that by assigning the edited version to object \code{PLFA},
+the edited version will overwrite the existing version.
+This is what should be done.
 
 The command will open a window like in figure \ref{fig:edit},
 which shows the problems.
 
-For instance, on the third line, the equivalen chain lenght of 14.49475 is
-closest to i-C15:0/c14:1w5c, but it differs from the ecl of this
+For instance,
+\begin{itemize}
+\item on the third line, the equivalent chain length of \emph{14.49475} is
+closest to \emph{i-C15:0/c14:1w5c}, but it differs from the ecl of this
 plfa with more than 0.02 (the inputted precision).
 
-As it is likely that this ecl is indeed i-C15:0/c14:1w5c, we accept this name
-and replace the item \code{UNKNOWN i-C15:0/C14:1w5c (14.473,0.022)}
-with \code{i-C15:0/C14:1w5c}.
+As it is likely that this ecl is indeed \emph{i-C15:0/c14:1w5c},
+we accept this name and replace the item
+\emph{UNKNOWN i-C15:0/C14:1w5c (14.473,0.022)}
+with \emph{i-C15:0/C14:1w5c}.
 
-Another uncertainty of a different kind is the occurrence of multiple peaks
+\item Another uncertainty of a different kind is the occurrence of multiple peaks
 (e.g. on line 11 where it says
 \code{MULTIPLE cy C17:0 (17.364,0.002), C17:1w7c (17.385,0.019)}
 
 Here we have to select the most likely plfa.
+\end{itemize}
 
 The edited PLFA file is in figure \ref{fig:edit2}.
 
@@ -254,13 +288,20 @@ be taken}
 
 Alternatively we may simply accept all the defaults suggested and type:
 <<>>=
- PLFA <- plfa.accept(PLFA)
+ PLFA <- chrom.accept(PLFA)
 @
+\clearpage
+\subsection{Outputting the results}
 
 After that we can print the results to the screen
 <<>>=
   data.frame(PLFA$name,PLFA$concentration)
 @
+print the settings of the analysis:
+<<>>=
+  diagnostics(PLFA)
+@
+
 and make a figure:
 
 <<label=plfa,include=FALSE>>=

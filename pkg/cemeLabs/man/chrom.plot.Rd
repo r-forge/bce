@@ -1,5 +1,5 @@
-\name{plotchrom}
-\alias{plotchrom}
+\name{chrom.plot}
+\alias{chrom.plot}
 \title{
   Plots a chromatogram
 }
@@ -8,7 +8,7 @@
 }
 
 \usage{
-plotchrom (x, xvar="time", yvar="area", label="Name", marker = NULL,
+chrom.plot (x, xvar="time", yvar="area", label="Name", marker = NULL,
              writelabels = FALSE, ...)
 
 }
@@ -36,8 +36,8 @@ plotchrom (x, xvar="time", yvar="area", label="Name", marker = NULL,
   }
 }
 \examples{
-  plotchrom(fa.data)
-  plotchrom(fa.data, writelabel = TRUE, ylab="area", xlab="time",
+  chrom.plot(fa.data)
+  chrom.plot(fa.data, writelabel = TRUE, ylab="area", xlab="time",
             main ="DATA SET 1", marker = fa.marker)
 }
 

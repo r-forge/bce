@@ -23,7 +23,7 @@ fa.data
 
 \examples{
 fa.data
-plotchrom(fa.data)
+chrom.plot(fa.data)
 }
 \references{
 }

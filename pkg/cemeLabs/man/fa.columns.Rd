@@ -6,6 +6,7 @@
 \alias{fa.polar1}
 \alias{fa.polar2}
 \alias{fa.zb5}
+\alias{irms.bpx70}
 
 \title{
   Input data set for the different FAME columns
@@ -20,7 +21,6 @@
     \item \code{fa.polar1}, "polair bpx70 - Eric Boschker"
     \item \code{fa.polar2}, "polair bpx70 - Marco Houttekamer" date nov 2004
   }
-
 }
 
 \usage{
