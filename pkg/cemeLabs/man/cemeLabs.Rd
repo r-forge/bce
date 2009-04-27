@@ -9,7 +9,7 @@ centre for estuarine and marine ecosystems, Yerseke, the netherlands.
 Includes
   \itemize{
     \item Analysis of fatty acid chromatogram data from
-        GC-FID carlo erba HRGC mega 2 GC
+        GC-FID carlo erba HRGC mega 2 GC.
 
   }
 }
