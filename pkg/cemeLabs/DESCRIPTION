@@ -3,7 +3,7 @@ Version: 1.0
 Title: Utilities for lab analyses from NIOO-CEME
 Author: Pieter Provoost <p.provoost@nioo.knaw.nl>, Karline Soetaert <k.soetaert@nioo.knaw.nl>
 Maintainer: Pieter Provoost <p.provoost@nioo.knaw.nl>
-Depends: R (>= 2.01)
+Depends: R (>= 2.01), RODBC
 Description: Function for laboratory analyses of NIOO-CEME
 License: GPL
 LazyData: yes

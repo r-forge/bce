@@ -4,7 +4,7 @@
 \description{estimates probability distributions of a sample composition
   based on 
   \item an \bold{input ratio matrix}, \code{Rat}, containing biomarker ratios in (field)
-  samples, and 
+  samples, and   
   \item an \bold{input data matrix}, \code{Dat}, containing the biomarker
   ratios for several taxonomic groups}
 \usage{BCE(Rat, Dat, relsdRat = 0, abssdRat = 0, minRat = 0, 

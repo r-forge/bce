@@ -3,12 +3,21 @@
 # ==============================================================================
 readirms <- function(filename, minarea=0) {
 
-  data <- read.csv(filename,header=TRUE,sep=";",
-                   as.is=TRUE,strip.white=TRUE)
-
-  if (ncol(data) != 41) # try a csv file separated with ,
-    data <- read.csv(filename,header=TRUE,
-               as.is=TRUE,strip.white=TRUE)
+  ext <- strsplit(filename,"\\.")[[1]][length( strsplit(filename,"\\.")[[1]])]
+  if(ext == "xls"){
+    library(RODBC)
+    conn <- odbcConnectExcel(filename)
+    tablename <- sqlTables(conn)$TABLE_NAME[1]
+    data <- sqlFetch(conn,tablename,as.is=TRUE)
+    close(conn) 
+    
+  } else {
+    data <- read.csv(filename,header=TRUE,sep=";",
+              as.is=TRUE,strip.white=TRUE)
+    if (ncol(data) != 41) # try a csv file separated with ,
+      data <- read.csv(filename,header=TRUE,
+                as.is=TRUE,strip.white=TRUE)
+  }
 
   if (ncol(data) != 41)
     stop("error in readirms: should be in csv format, separated with ; or , and 41 columns")
@@ -39,7 +48,7 @@ readirms <- function(filename, minarea=0) {
 # ==============================================================================
 
 irms <- function (input, irms.ref = irms.bpx70,
-                  time_standard = c(879.4000244,1654.3,2248.1),
+                  time_standard = c(800,1600,2000),
                   ecl_standard = c(12,16,19),
                   qty_standard, qty_sample = 1,
                   volume_chlor, weight_chlor,
