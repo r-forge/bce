@@ -11,7 +11,7 @@
   A typically contains biomarker concentrations for several taxonomic groups,
   and B field measurements of the same biomarkers. X is then an estimate
   of the taxonomic composition of the field sample.}
-\usage{tlsce(A,B,Wa=NULL,optimizationfunction="nlminb",A_init=A,...)}
+\usage{tlsce(A,B,Wa=NULL,optimizationfunction="nlminb",A_init=A,Xratios=TRUE,...)}
 \arguments{
   \item{A }{a matrix or data frame. If A contains biomarker data for
     taxonomic groups, the biomarkers have to be organized per row, and
@@ -35,6 +35,8 @@
     provides a good fit, but when in doubt about the convergence of the
     algorithm, one can provide different starting values for the
     optimization routine in A_init.}
+  \item{Xratios }{TRUE or FALSE: are the colSums of the matrix X equal
+    to 1? This is for example the case in a compositional matrix.}
   \item{...}{Arguments to be passed to the optimization function in
     use.}
 }

@@ -33,7 +33,7 @@
 
 \examples{
 
-export.bce(bceOutput, file="bceOutput")
+\dontrun{export.bce(bceOutput, file="bceOutput")}
 
 }
 \author{Karel Van den Meersche}

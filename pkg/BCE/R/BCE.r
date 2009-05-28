@@ -173,6 +173,9 @@ BCE <- function(
       ##=======================================##
       ## initialise mcmc objects
       ##=======================================##
+      if (burninlength>=iter) stop("The burninlength
+defines the number of iterations to be removed from the analysis.
+This burninlength cannot be smaller than iter, the total number of iterations!")
       ou <- ceiling((iter-burninlength)/outputlength)
       iter <- iter-(iter-burninlength)%%ou
       outputlength <- (iter-burninlength)%/%ou
