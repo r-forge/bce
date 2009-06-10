@@ -104,7 +104,7 @@ estimates probability distributions of a sample composition
 }
 
 \details{
-  The function \code{\BCE} searches probability distributions for all
+  The function \code{BCE} searches probability distributions for all
   elements of a taxonomical composition matrix \code{X} and a ratio
   matrix \code{Rat} for which:
 

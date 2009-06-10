@@ -54,7 +54,7 @@
 
 \details{
   instead of a linear least squares regression, in which the
-  elements of A would be fixed, the function \code{\tlsce} includes the
+  elements of A would be fixed, the function \code{tlsce} includes the
   non-zero elements of A in the least squares regression. This is
   similar to other total least squares regression methods, with the main
   difference that only non-zero elements of A contain an error term. 
