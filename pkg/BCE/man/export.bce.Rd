@@ -2,14 +2,20 @@
 \alias{export.bce}
 \title{export BCE}
 \description{export function: writes a BCE-object and its summary
-  statistics to a series of files}
-\usage{export.bce(x, file="BCE", input.list=NULL,...)}
+  statistics to a series of files.
+}
+\usage{export.bce(x, file="BCE", input.list=NULL, ...)
+}
 \arguments{
-  \item{x }{a bce object, output of the function bce()}
-  \item{file }{file to which the bce object is written}
+  \item{x }{a bce object, output of the function bce().
+  }
+  \item{file }{file to which the bce object is written.
+  }
   \item{input.list }{a list of the arguments in bce() can be provided
-    and saved as well.}
-  \item{... }{additional arguments}
+    and saved as well.
+  }
+  \item{... }{additional arguments.
+  }
 }
 \details{
   The bce object is saved (\code{\link{save}}) to the specified file.
