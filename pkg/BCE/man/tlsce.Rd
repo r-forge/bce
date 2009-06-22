@@ -62,17 +62,24 @@
 
 \value{
   A list with the following elements:
-  \item{X }{ Array with dimension c(nrow(\code{Rat}),ncol(\code{Rat}),
-    \code{iter}) containing the random walk values of the ratio matrix \code{Rat}}
-  \item{A\_fit }{ Array with dimension c(nrow(\code{X}),ncol(\code{X}),
-    \code{iter}) containing the random walk values of the composition matrix \code{X}}
-  \item{B\_fit }{ vector with length \code{iter} containing the random}
-  \item{solutionNorms }{a vector of 3 values: the value of the minimised
-    quadratic function at
-    the solution, in this case
-    \eqn{\sum{(Afit-A)*Wa)^2 + (Bfit-B)^2}}{sum((Afit-A)*Wa)^2 + (Bfit-B)^2)}, and the
-    shares of this value attributed to A and to B}
-  \item{convergence }{An integer code. '0' indicates successful convergence.}
+  \item{X }{ Array with dimension c(ncol(\code{A}),ncol(\code{B}),
+    \code{iter}) containing the species composition of each sample
+    }
+  \item{A\_fit }{ Array with same dimension as \code{A}, containing the
+    best-fit values of the input biomarker data per taxonomic group
+    }
+  \item{B\_fit }{ Array with same dimension as \code{B}, containing the
+    biomarker field data, corresponding to Afit
+    }
+  \item{solutionNorms }{a vector of 3 values:
+
+    the value of the minimised quadratic function at the solution, in this case
+    \eqn{\sum{(Afit-A)*Wa)^2 + (Bfit-B)^2}}{sum((Afit-A)*Wa)^2 + (Bfit-B)^2)},
+
+    and the shares of this value attributed to A and to B
+  }
+  \item{convergence }{An integer code. '0' indicates successful convergence.
+  }
 }
 
 \references{
