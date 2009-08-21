@@ -1,11 +1,7 @@
-## based on chemtax24.R
-## new in this release: 
-## probabilityBCE: p(Dat|y) ipv p(y|Dat) in model
-## plot.bce: reset par()
-## Karel Van den Meersche, Karline Soetaert
-## 20070615
-################################################################################
-################################################################################
+## Main developers: Karel Van den Meersche, Karline Soetaert
+## 
+#####################################################################
+#####################################################################
 
 
 rescaleRows <- function (A,                 # matrix or dataframe to be row-rescaled: rowSums(A[rescale])=1
@@ -242,7 +238,7 @@ This burninlength cannot be smaller than iter, the total number of iterations!")
       mcmc <- list(Rat=mcmc.Rat,X=mcmc.X,logp=mcmc.logp,naccepted=naccepted)
       class(mcmc) <- c("bce","list")
       if (export) export(mcmc,file,input.list)
-      return(mcmc)                      # bce object: a list containing 4 elements:
+      return(invisible(mcmc))           # bce object: a list containing 4 elements:
                                         # - mcmc.Rat: array with dimension c(nrow(Rat),ncol(Rat),iter) containing the random walk values of the ratio matrix
                                         # - mcmc.X: array with dimension c(nrow(x),ncol(x),iter) containing the random walk values of the composition matrix
                                         # - mcmc.logp: vector with length iter containing the random walk values of the posterior probability
@@ -539,22 +535,22 @@ summary.bce <- function(object,           # a bce-object, output of the function
       covX <- var(matrix(aperm(X),ncol=lx,dimnames=list(NULL,covXnames)),na.rm=TRUE)
       
       ## output
-      return(list(firstX=firstX,        # X determined through least squares regression from the initial ratio matrix and the data matrix
-                  bestRat=bestRat,      # ratio matrix for which the posterior probability is maximal
-                  bestX=bestX,          # composition matrix for which the posterior probability is maximal
-                  bestLogp=bestLogp,    # maximal posterior probability
-                  bestDat=bestDat,      # product of bestRat and bestX
-                  meanRat=meanrat,      # means of the elements of the ratio matrix
-                  sdRat=sdrat,          # standard deviation of the elements of the ratio matrix
-                  lbRat=lbrat,          # lower boundary of the confidence interval of the elements of the ratio matrix
-                  ubRat=ubrat,          # upper boundary of the confidence interval of the elements of the ratio matrix
-                  covRat=covrat,        # covariance matrix of the elements of the ratio matrix
-                  meanX=meanX,          # means of the elements of the composition matrix
-                  sdX=sdX,              # standard deviation of the elements of the composition matrix
-                  lbX=lbX,              # lower boundary of the confidence interval of the elements of the composition matrix
-                  ubX=ubX,              # upper boundary of the confidence interval of the elements of the composition matrix
-                  covX=covX             # covariance matrix of the elements of the composition matrix
-                  ))
+      return(invisible(list(firstX=firstX,        # X determined through least squares regression from the initial ratio matrix and the data matrix
+                            bestRat=bestRat,      # ratio matrix for which the posterior probability is maximal
+                            bestX=bestX,          # composition matrix for which the posterior probability is maximal
+                            bestLogp=bestLogp,    # maximal posterior probability
+                            bestDat=bestDat,      # product of bestRat and bestX
+                            meanRat=meanrat,      # means of the elements of the ratio matrix
+                            sdRat=sdrat,          # standard deviation of the elements of the ratio matrix
+                            lbRat=lbrat,          # lower boundary of the confidence interval of the elements of the ratio matrix
+                            ubRat=ubrat,          # upper boundary of the confidence interval of the elements of the ratio matrix
+                            covRat=covrat,        # covariance matrix of the elements of the ratio matrix
+                            meanX=meanX,          # means of the elements of the composition matrix
+                            sdX=sdX,              # standard deviation of the elements of the composition matrix
+                            lbX=lbX,              # lower boundary of the confidence interval of the elements of the composition matrix
+                            ubX=ubX,              # upper boundary of the confidence interval of the elements of the composition matrix
+                            covX=covX             # covariance matrix of the elements of the composition matrix
+                            )))
     })
   } # end function summary.bce
 

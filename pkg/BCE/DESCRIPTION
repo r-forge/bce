@@ -1,10 +1,10 @@
 Package: BCE
-Version: 1.4
+Version: 2.0
 Title: Bayesian composition estimator: estimating sample (taxonomic) composition from biomarker data
 Author: Karel Van den Meersche <k.vdmeersche@nioo.knaw.nl>, Karline Soetaert <k.soetaert@nioo.knaw.nl>
 Maintainer: Karel Van den Meersche <k.vdmeersche@nioo.knaw.nl>
-Depends: R (>= 2.0.1), limSolve
+Depends: R (>= 2.0.1), FME, limSolve, matrix
 Description: Function to estimates taxonomic compositions from biomarker data, using a Bayesian approach.
 License: GPL
 LazyData: yes
-Packaged: Tue Apr 15 14:01:17 2008; karlines
+
