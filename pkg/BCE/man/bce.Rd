@@ -5,21 +5,32 @@
   estimates probability distributions of a sample composition
   based on an \bold{input ratio matrix}, \code{A}, containing
   biomarker ratios in (field) samples, and an \bold{input data matrix},
-  \code{B}, containing the biomarker ratios for several taxonomic groups}
+  \code{B}, containing the biomarker ratios for several taxonomic groups.
+  
+  Probability distributions are estimated based on an adaptive metropolis
+  MCMC method, function \code{modMCMC} from package \code{FME}.
+}
 \usage{bce(A, B, Wa=NULL, Wb=NULL, jmpA=.1,jmpX=.1, jmpType="default",
        initX=NULL, initA=NULL, priorA=NULL, minA=NULL, maxA=NULL, 
-       var0=NULL, wvar0=1, Xratios=TRUE, verbose=TRUE, ...)}
-
+       var0=NULL, wvar0=1, Xratios=TRUE, verbose=TRUE, ...)
+}
 \arguments{
-  \item{A }{ratio matrix; can be a matrix or a dataframe}
-  \item{B }{data matrix; can be a matrix or a  dataframe}
+  \item{A }{input (group) ratio matrix; can be a matrix or a dataframe
+  }
+  \item{B }{input (field) data matrix; can be a matrix or a  dataframe
+  }
   \item{Wa }{elementwise weight matrix for A, with the
-    same dimensions as A. \deqn{[Wa*(A-A_0)]^2} is minimized}
+    same dimensions as A. \deqn{[Wa*(A-A_0)]^2} is minimized
+  }
   \item{Wb }{elementwise weight matrix for B, with the same dimensions
-    as B. \deqn{[Wb*(A\%*\%X-B)]^2} is minimized}
-  \item{priorA }{"normal" (gaussian - default) or "uniform"}
-  \item{minA }{minimum values for A}
-  \item{maxA }{maximum values for A}
+    as B. \deqn{[Wb*(A\%*\%X-B)]^2} is minimized
+  }
+  \item{priorA }{"normal" (gaussian - default) or "uniform"
+  }
+  \item{minA }{minimum values for A
+  }
+  \item{maxA }{maximum values for A
+  }
   \item{jmpType }{one of "default", "estimate" or "covar"; if default, jmpA and jmpX
     are the jump lengths. if jmpA or jmpX is a number,
     then this is the jump length for all elements of A
@@ -33,24 +44,36 @@
     Covariances can be calculated from the result. 
   }
   \item{jmpA }{jump length of A: a number or a matrix with dim(A); see
-    details jmpType}
+    details jmpType
+  }
   \item{jmpX }{jump lenth of X: a number or a matrix with dim(X); see
-    details jmpType}
-  \item{jmpCovar }{only if jmpType="covar"}
-    \item{initX }{composition matrix used to start the markov chain:
-      default the tlsce solution of Ax=B}
-    \item{initA }{ratio matrix used to start the markov chain:
-      default the input ratio matrix A}
-    \item{var0 }{initial model variance; if 'NULL', then the model
-      variance of tlsce(A,B,...) is used}
-    \item{wvar0 }{relative weight of the initial model variance (see modMCMC)}
-    \item{Xratios }{does the composition matrix contain ratios (TRUE) or
+    details jmpType
+  }
+  \item{jmpCovar }{only if jmpType="covar", the covariance matrix to
+    initiate the jumps - see details jmpType
+  }
+  \item{initX }{composition matrix used to start the markov chain:
+      default the tlsce solution of Ax=B
+  }
+  \item{initA }{ratio matrix used to start the markov chain:
+      default the input ratio matrix A
+  }
+  \item{var0 }{initial model variance; if 'NULL', then the model
+      variance of tlsce(A,B,...) is used
+  }
+  \item{wvar0 }{relative weight of the initial model variance
+    (see modMCMC)
+  }
+  \item{Xratios }{does the composition matrix contain ratios (TRUE) or
       estimated biomass concentrations (TRUE) per sample? In the
       latter case, B must contain the pigment concentrations as
-      measured in the samples (not rescaled).
-    \item{verbose }{}
-    \item{... }{arguments to pass on to modMCMC()}
-
+      measured in the samples (not rescaled)
+  }
+  \item{verbose }{when \code{TRUE} will give more verbose output
+  }
+  \item{... }{arguments to pass on to modMCMC()
+  }
+}
 \details{
   The function \code{bce} searches probability distributions for all
   elements of a taxonomical composition matrix \code{X} and a ratio
