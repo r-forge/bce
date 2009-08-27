@@ -9,31 +9,15 @@
 ## the optimization algorithm, and more output details (hessian,...)
 ################################################################
 
-tlsce <- function(A,B,
+tlsce <- function(A,
+                  B,
                   Wa=NULL,
-                  Wb=NULL,     # weight matrices for A and B, weighted
-                               # according to 1/stdev
+                  Wb=NULL,
                   minA=NULL,
                   maxA=NULL,
-                  A_init=A,    # initial settings for elements of A in
-                               # the optimization routine; to check
-                               # convergence from different starting
-                               # points.
-                  Xratios=TRUE,# the columns sums of X have to be 1
-                               # (only if A and B are both expressed
-                               # relative to the unit of biomass) if
-                               # Xratios =TRUE, A has pigment
-                               # concentrations per biomass unit, B
-                               # has pigment concentrations per
-                               # biomass unit per sample, and X
-                               # contains ratios of biomass unit per
-                               # sample.  if Xratios =FALSE, A has
-                               # pigment concentrations per biomass
-                               # unit, B has pigment concentrations
-                               # per sample, and X has biomass units
-                               # per sample
-                  ...)         # parameters to be passed on to lsei()
-                               # or to modFit()
+                  A_init=A,
+                  Xratios=TRUE,
+                  ...)         
   {
 
     ##=================##
@@ -52,9 +36,10 @@ tlsce <- function(A,B,
       E <- t(rep(1,m)); F <- t(rep(1,n))} else {
         E <- t(rep(0,m)); F <- t(rep(0,n))} # sum of species fractions is 1 or not
     G <- diag(1,m); H <- matrix(0,m,n)  # all elements positive
-    if(is.null(Wa))                     # weighting of elements of A
-      {Wa_c <- rep(1,lw)
-     }else{Wa_c <- Wa[w]}
+    if (is.null(Wa)) Wa_c <- rep(1,lw)  # weighting of elements of A and B
+    if (length(Wa)==1) Wa_c <- rep(Wa,lw)
+    if (length(Wa)==length(A)) Wa_c <- Wa[w]
+    if (length(Wb)==1) Wb <- matrix(Wb,l,m)
     A_c_init <- A_init[w]
     if (is.null(minA)) minA_c <- rep(0,lw) else minA_c <- minA[w]
     if (is.null(maxA)) maxA_c <- rep(+Inf,lw) else maxA_c <- maxA[w]

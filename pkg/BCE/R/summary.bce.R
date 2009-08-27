@@ -3,8 +3,10 @@ summary.bce <- function(object,           # a bce-object, output of the function
                         ...)            # additional arguments affecting the summary produced
   ## extract best, mean, sd, upper and lower boundaries, and covariance
   {
-    if (!is.null(attributes(object)$dim_A))
+    if (!is.null(attributes(object)$A_not_null))
       {
+        covariance <- cov(object$pars)
+        
         w <- attributes(object)$A_not_null
         npig <- nrow(w)
         nalg <- ncol(w)
@@ -13,6 +15,7 @@ summary.bce <- function(object,           # a bce-object, output of the function
         algnames <- attributes(object)$algnames
         lw <- length(which(w))
         lp <- ncol(object$pars)
+        Xratios <- attributes(object)$Xratios
         if (Xratios) nst <- (lp-lw)/(nalg-1) else nst <- (lp-lw)/nalg
         stnames <- attributes(object)$stnames
         
@@ -21,6 +24,8 @@ summary.bce <- function(object,           # a bce-object, output of the function
         mcmc.X <- array(dim=c(nalg,nst,outputlength),dimnames=list(algnames,stnames,NULL))
         if (Xratios)
           {
+            suppressWarnings(Z <- matrix(c(1,-1,rep(0,nalg-1)),nalg,nalg-1))
+            P <- c(rep(0,nalg-1),1)
             mcmc.Q <- array(dim=c(nalg-1,nst,outputlength),dimnames=list(NULL,stnames,NULL))
             mcmc.Q[] <- t(object$pars[,-(1:lw)])
             for (i in 1:outputlength) mcmc.X[,,i] <- Z%*%mcmc.Q[,,i]+P
@@ -28,18 +33,52 @@ summary.bce <- function(object,           # a bce-object, output of the function
             mcmc.X[] <- t(object$pars[,-(1:lw)])
           }
         
-        mean.pars <- apply(object$pars,1,mean)
-        best.pars <- object$pars[which.min(object$SS)]
+        mean.pars <- apply(object$pars,2,mean)
+        best.pars <- object$pars[which.min(object$SS),]
+        sd.pars <- apply(object$pars,2,sd)
+        last.pars <- object$pars[nrow(object$pars),]
+        
         mean.A <- w; mean.A[w] <- mean.pars[1:lw]
-        mean.X
-        sd.A
-        sd.X
-        best.A
-        best.X
-                
+        best.A <- w; best.A[w] <- best.pars[1:lw]
+        sd.A <- w; sd.A[w] <- sd.pars[1:lw]
+        last.A <- w; last.A[w] <- last.pars[1:lw]
+
+        if (Xratios)
+          {
+            suppressWarnings(Z <- matrix(c(1,-1,rep(0,nalg-1)),nalg,nalg-1))
+            P <- c(rep(0,nalg-1),1)
+            mean.Q <- matrix(mean.pars[-(1:lw)],nrow=nalg-1)
+            mean.X <- Z%*%mean.Q+P
+            best.Q <- matrix(best.pars[-(1:lw)],nrow=nalg-1)
+            best.X <- Z%*%best.Q+P
+            sd.X <- apply(mcmc.X,1:2,sd)
+            last.Q <- matrix(last.pars[-(1:lw)],nrow=nalg-1)
+            last.X <- Z%*%last.Q+P
+          } else {
+            mean.X <- matrix(mean.pars[-(1:lw)],nrow=nalg)
+            best.X <- matrix(mean.pars[-(1:lw)],nrow=nalg)
+            sd.X <- matrix(sd.pars[-(1:lw)],nrow=nalg)
+            last.X <- matrix(last.pars[-(1:lw)],nrow=nalg)
+          }
+
+        rownames(mean.A) <- rownames(best.A) <- rownames(sd.A) <- rownames(last.A) <- pignames
+        colnames(mean.A) <- colnames(best.A) <- colnames(sd.A) <- colnames(last.A) <- 
+          rownames(mean.X) <- rownames(best.X) <- rownames(sd.X) <- rownames(last.X) <- algnames
+        colnames(mean.X) <- colnames(best.X) <- colnames(sd.X) <- colnames(last.X) <- stnames
+
+        return(list(meanA=mean.A,
+                    meanX=mean.X,
+                    bestA=best.A,
+                    bestX=best.X,
+                    sdA=sd.A,
+                    sdX=sd.X,
+                    lastA=last.A,
+                    lastX=last.X,
+                    covar=covariance))
+        
+        
         
       } else {
-        
         
         with(object,{
 

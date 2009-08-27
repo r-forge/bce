@@ -477,83 +477,6 @@ logProbabilityBCE <- function(RAT,        # ratio matrix
     })
   }
 
-##########################################################################################################
-
-summary.bce <- function(object,           # a bce-object, output of the function bce()
-                        confInt=2/3, # confidence interval of values of composion matrix and ratio matrix
-                        ...)            # additional arguments affecting the summary produced
-  ## extract best, mean, sd, upper and lower boundaries, and covariance
-  {
-    with(object,{
-
-      nalg <- dim(Rat)[1]
-      lr <- length(Rat)/length(logp)
-      lx <- length(X)/length(logp)
-
-      
-      w <- which.max(logp)
-      bestLogp <- logp[w]
-
-      quantile1 <- function(x) quantile(x,probs=c((1-confInt)/2,1/2,(1+confInt)/2))
-
-      bestRat <- Rat[,,w]
-      meanrat <- rowMeans(Rat,dims=2)
-      quantilerat <- apply(Rat,1:2,quantile1)
-      lbrat <- quantilerat[1,,]
-      ubrat <- quantilerat[3,,]
-      sdrat <- apply(Rat,1:2,sd)
-
-      if (is.matrix(X)) {
-        firstX <- X[,1]
-        bestX <- X[,w]
-        meanX <- rowMeans(X)
-        quantileX <- apply(X,1,quantile1)
-        lbX <- quantileX[1,]
-        ubX <- quantileX[3,]
-        sdX <- apply(X,1,sd)
-      } else{
-        firstX <- X[,,1]
-        bestX <- X[,,w]    
-        meanX <- rowMeans(X,dims=2)
-        quantileX <- apply(X,1:2,quantile1)
-        lbX <- quantileX[1,,]
-        ubX <- quantileX[3,,]
-        sdX <- apply(X,1:2,sd)
-      }
-
-      bestDat <- bestX%*%bestRat
-
-      if (all(sdrat==0)) covrat <- 0 else
-      {
-        covratnames <- vector(length=lr)
-        for (i in 1:lr) covratnames[i] <- paste("Rat(",(i-1)%%nalg+1,",",(i-1)%/%nalg+1,")",sep="")
-        covrat <- var(matrix(aperm(Rat,c(3,1,2)),ncol=lr,dimnames=list(NULL,covratnames))[,sdrat>1e-8],na.rm=TRUE)
-      }
-
-      covXnames <- vector(length=lx)
-      for (i in 1:lx) covXnames[i] <- paste("x(",(i-1)%/%nalg+1,",",(i-1)%%nalg+1,")",sep="")
-      covX <- var(matrix(aperm(X),ncol=lx,dimnames=list(NULL,covXnames)),na.rm=TRUE)
-      
-      ## output
-      return(invisible(list(firstX=firstX,        # X determined through least squares regression from the initial ratio matrix and the data matrix
-                            bestRat=bestRat,      # ratio matrix for which the posterior probability is maximal
-                            bestX=bestX,          # composition matrix for which the posterior probability is maximal
-                            bestLogp=bestLogp,    # maximal posterior probability
-                            bestDat=bestDat,      # product of bestRat and bestX
-                            meanRat=meanrat,      # means of the elements of the ratio matrix
-                            sdRat=sdrat,          # standard deviation of the elements of the ratio matrix
-                            lbRat=lbrat,          # lower boundary of the confidence interval of the elements of the ratio matrix
-                            ubRat=ubrat,          # upper boundary of the confidence interval of the elements of the ratio matrix
-                            covRat=covrat,        # covariance matrix of the elements of the ratio matrix
-                            meanX=meanX,          # means of the elements of the composition matrix
-                            sdX=sdX,              # standard deviation of the elements of the composition matrix
-                            lbX=lbX,              # lower boundary of the confidence interval of the elements of the composition matrix
-                            ubX=ubX,              # upper boundary of the confidence interval of the elements of the composition matrix
-                            covX=covX             # covariance matrix of the elements of the composition matrix
-                            )))
-    })
-  } # end function summary.bce
-
 
 ##########################################################################################
 
@@ -563,12 +486,16 @@ export.bce <- function(x,             # a bce object, output of the function bce
                        input.list=NULL, # a list of the arguments in bce() can be provided and saved as well.
                        ...)             # additional arguments
   {
-    BCE <- x
-    save(BCE,input.list,file=file)
-
-    BCEsummary <- summary(BCE)
-
-    with(c(BCE,BCEsummary),{
+    if (!is.null(attributes(x)$A_not_null)) {
+      return("no export function is available for output of the function bce(); see ?BCE for the use of export.bce")
+    } else {
+      
+      BCE <- x
+      save(BCE,input.list,file=file)
+      
+      BCEsummary <- summary(BCE)
+      
+      with(c(BCE,BCEsummary),{
       write.csv(firstX,paste(file,"-firstX.csv",sep=""))
       write.csv(bestRat,paste(file,"-bestRat.csv",sep=""))
       write.csv(bestX,paste(file,"-bestX.csv",sep=""))
@@ -630,50 +557,56 @@ export.bce <- function(x,             # a bce object, output of the function bce
       
       dev.off()
     })
-  }                                     #end function export.bce()
+    } 
+  }                                    #end function export.bce()
 
 #############################################################################################
 
 plot.bce <- function(x,...)               # bce object
-  {with(x,{
+  if (!is.null(attributes(x)$A_not_null)) {
+    NextMethod("modMCMC")
+  } else {
     
-    nalg <- nrow(Rat)
-    npig <- ncol(Rat)
-    algnames <- rownames(Rat); if (is.null(algnames)) algnames <- paste("taxon",1:nalg)
-    pignames <- colnames(Rat); if (is.null(pignames)) pignames <- paste("biomarker",1:npig)
+    with(x,{
+      
+      nalg <- nrow(Rat)
+      npig <- ncol(Rat)
+      algnames <- rownames(Rat); if (is.null(algnames)) algnames <- paste("taxon",1:nalg)
+      pignames <- colnames(Rat); if (is.null(pignames)) pignames <- paste("biomarker",1:npig)
     if (is.matrix(X)) {nst <- 1; stnames <- NULL} else { nst <- nrow(X); stnames <- rownames(X)}
-    if (is.null(stnames)) stnames <- paste("sample",1:nst)
-
-    oldpar <- par(no.readonly=TRUE)
-    par(mfcol=c(nalg,5),mar=c(0,0,0,0),oma=c(0,0,1,0),ask=TRUE)
-
-    for (j in 1:npig)
-      {
-        for (i in 1:nalg)
-          {
-            R <- Rat[i,j,]
-            Rr <- range(R)
-            if (all(Rr==0)) plot.new() else {
-              ylim <- matrix(c(1,-.2,0,1.2),2)%*%Rr
-              plot(R,type="l",xlab="",ylab="",xaxt="n",yaxt="n",ylim=ylim)
-              text(0,ylim[2],paste(algnames[i],pignames[j]),adj=0)
+      if (is.null(stnames)) stnames <- paste("sample",1:nst)
+      
+      oldpar <- par(no.readonly=TRUE)
+      par(mfcol=c(nalg,5),mar=c(0,0,0,0),oma=c(0,0,1,0),ask=TRUE)
+      
+      for (j in 1:npig)
+        {
+          for (i in 1:nalg)
+            {
+              R <- Rat[i,j,]
+              Rr <- range(R)
+              if (all(Rr==0)) plot.new() else {
+                ylim <- matrix(c(1,-.2,0,1.2),2)%*%Rr
+                plot(R,type="l",xlab="",ylab="",xaxt="n",yaxt="n",ylim=ylim)
+                text(0,ylim[2],paste(algnames[i],pignames[j]),adj=0)
+              }
             }
-          }
-      }
-    mtext("ratio matrix traces",outer=TRUE)
-    
-          
-    par(mfcol=c(nalg,5),mar=c(0,0,0,0),oma=c(0,0,1,0),ask=TRUE)
-    for (i in 1:nst)
-      {
-        for(j in 1:nalg)
-          {
+        }
+      mtext("ratio matrix traces",outer=TRUE)
+      
+      
+      par(mfcol=c(nalg,5),mar=c(0,0,0,0),oma=c(0,0,1,0),ask=TRUE)
+      for (i in 1:nst)
+        {
+          for(j in 1:nalg)
+            {
             ifelse(is.matrix(X),x <- X[j,],x <- X[i,j,])
             xr <- range(x)
             ylim <- matrix(c(1,-.2,0,1.2),2)%*%xr
             plot(x,type="l",xlab="",ylab="",xaxt="n",yaxt="n",ylim=ylim)
             text(0,ylim[2],paste(stnames[i],algnames[j]),adj=0)
           }
-      }
-    par(oldpar)
-  })}
+        }
+      par(oldpar)
+    })
+  }

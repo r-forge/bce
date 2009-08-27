@@ -25,7 +25,7 @@ bce <- function(
                 minA    = NULL, 
                 maxA    = NULL, 
                 var0    = NULL, 
-                wvar0   = 1,    
+                wvar0   = 0,    
                 Xratios = TRUE, 
                 verbose=TRUE,
                 ...             
@@ -46,17 +46,24 @@ bce <- function(
     A0 <- as.matrix(A)
     B0 <- as.matrix(B)
 
-    ## useful numbers
-    nalg <- ncol(A0)    ;    algnames   <- colnames(A0)       # number & names of taxonomic groups
-    nst  <- ncol(B0)    ;    stnames    <- colnames(B0)       # number & names of stations or samples
-    npig <- nrow(A0)    ;    pignames   <- rownames(A0)       # number & names of biomarkers
-    lr <- npig*nalg
+    ## useful numbers & names
+    nalg <- ncol(A0)
+    nst  <- ncol(B0)
+    npig <- nrow(A0)
+    algnames   <- colnames(A0)       # number & names of taxonomic groups
+    stnames    <- colnames(B0)       # number & names of stations or samples
+    pignames   <- rownames(A0)       # number & names of biomarkers    lr <- npig*nalg
+    if (is.null(algnames)) algnames <- 1:nalg
+    if (is.null(stnames)) stnames <- 1:nst
+    if (is.null(pignames)) pignames <- 1:npig
     lc <- nalg*nst
     w <- A0>0
     lw <- length(which(w))
     
-    if (is.null(Wa)) Wa <- matrix(1,npig,nalg) else Wa <- as.matrix(Wa)
-    if (is.null(Wb)) Wb <- matrix(1,npig,nst) else Wb <- as.matrix(Wb)
+    if (is.null(Wa)) Wa <- matrix(1,npig,nalg) else
+    if (length(Wa)==1) Wa <- matrix(Wa,npig,nalg) else Wa <- as.matrix(Wa)
+    if (is.null(Wb)) Wb <- matrix(1,npig,nst) else
+    if (length(Wb)==1 Wb <- matrix(Wb <- as.matrix(Wb)
     if (is.null(minA)) minA <- matrix(0,npig,nalg)
     if (is.null(maxA)) maxA <- matrix(Inf,npig,nalg)
     
@@ -86,6 +93,16 @@ bce <- function(
     if (is.null(initA)) initA <- A 
     if (Xratios) par <- c(initA[w],Q0) else par <- c(initA[w],X0)
     lp <- length(par)
+    names(par)[1:lw] <-
+      paste("A",
+            abbreviate(rownames(A)[which(w,arr.ind=TRUE)[,1]]),
+            abbreviate(colnames(A)[which(w,arr.ind=TRUE)[,2]]),
+            sep="_")
+    names(par)[-(1:lw)] <-
+      paste("Q",
+            1:(nalg-1),
+            rep(abbreviate(colnames(B)),each=nalg-1),
+            sep="_")
     if (is.null(var0)) var0 <- tlsce0$SS["total"]/lp
     
     ## residuals function
@@ -129,7 +146,7 @@ bce <- function(
         if (length(jmpX)==1) jmpX <- matrix(jmpX,nalg,nst)
         if (Xratios) 
           {
-            jmpQ <- (X[-1,]+X[-nalg,])*.5
+            jmpQ <- (jmpX[-1,]+jmpX[-nalg,])*.5
           } else {
             jmpQ <- jmpX
           }
