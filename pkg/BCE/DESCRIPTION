@@ -5,6 +5,6 @@ Author: Karel Van den Meersche <k.vdmeersche@nioo.knaw.nl>, Karline Soetaert <k.
 Maintainer: Karel Van den Meersche <k.vdmeersche@nioo.knaw.nl>
 Depends: R (>= 2.0.1), FME, limSolve, Matrix
 Description: Function to estimates taxonomic compositions from biomarker data, using a Bayesian approach.
-License: GPL
+License: GPL (>= 2)
 LazyData: yes
 
