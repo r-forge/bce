@@ -232,13 +232,13 @@ This burninlength cannot be smaller than iter, the total number of iterations!")
           
         } # end mcmc loop
 
-      if (dim(mcmc.X)[1]==1) {dim(mcmc.X) <- dim(mcmc.X)[2:3] ; rownames(mcmc.X) <- pignames}
+      if (dim(mcmc.X)[1]==1) {dim(mcmc.X) <- dim(mcmc.X)[2:3] ; rownames(mcmc.X) <- algnames}
       if (verbose) print(cat("number of accepted runs: ",naccepted," out of ",iter," (",100*naccepted/iter,"%) ",sep=""))
 
       mcmc <- list(Rat=mcmc.Rat,X=mcmc.X,logp=mcmc.logp,naccepted=naccepted)
       class(mcmc) <- c("bce","list")
       if (export) export(mcmc,file,input.list)
-      return(invisible(mcmc))           # bce object: a list containing 4 elements:
+      return(mcmc)           # bce object: a list containing 4 elements:
                                         # - mcmc.Rat: array with dimension c(nrow(Rat),ncol(Rat),iter) containing the random walk values of the ratio matrix
                                         # - mcmc.X: array with dimension c(nrow(x),ncol(x),iter) containing the random walk values of the composition matrix
                                         # - mcmc.logp: vector with length iter containing the random walk values of the posterior probability

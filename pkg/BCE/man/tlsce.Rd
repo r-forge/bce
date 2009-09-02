@@ -14,8 +14,8 @@
   of the taxonomic composition of the field sample.
 }
 
-\usage{tlsce(A, B, Wa=NULL, optimizationfunction="nlminb",
-  A_init=A, Xratios=TRUE, ...)
+\usage{tlsce(A, B, Wa=NULL, Wb=NULL, minA=NULL, maxA=NULL,
+       A_init=A, Xratios=TRUE, ...)
 }
 
 \arguments{

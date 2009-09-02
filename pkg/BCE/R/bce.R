@@ -63,7 +63,7 @@ bce <- function(
     if (is.null(Wa)) Wa <- matrix(1,npig,nalg) else
     if (length(Wa)==1) Wa <- matrix(Wa,npig,nalg) else Wa <- as.matrix(Wa)
     if (is.null(Wb)) Wb <- matrix(1,npig,nst) else
-    if (length(Wb)==1) Wb  <- as.matrix(Wb)
+    if (length(Wb)==1) Wb  <- matrix(Wb,npig,nst) else Wb <- as.matrix(Wb)
     if (is.null(minA)) minA <- matrix(0,npig,nalg)
     if (is.null(maxA)) maxA <- matrix(Inf,npig,nalg)
     

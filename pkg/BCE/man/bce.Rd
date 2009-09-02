@@ -10,8 +10,9 @@
   Probability distributions are estimated based on an adaptive metropolis
   MCMC method, function \code{modMCMC} from package \code{FME}.
 }
-\usage{bce(A, B, Wa=NULL, Wb=NULL, jmpA=.1,jmpX=.1, jmpType="default",
-       initX=NULL, initA=NULL, priorA=NULL, minA=NULL, maxA=NULL, 
+\usage{bce(A, B, Wa=NULL, Wb=NULL,
+       jmpType="default", jmpA=.1,jmpX=.1, jmpCovar=NULL,
+       initX=NULL, initA=NULL, priorA="normal", minA=NULL, maxA=NULL, 
        var0=NULL, wvar0=1, Xratios=TRUE, verbose=TRUE, ...)
 }
 \arguments{
@@ -24,12 +25,6 @@
   }
   \item{Wb }{elementwise weight matrix for B, with the same dimensions
     as B. \deqn{[Wb*(A\%*\%X-B)]^2} is minimized
-  }
-  \item{priorA }{"normal" (gaussian - default) or "uniform"
-  }
-  \item{minA }{minimum values for A
-  }
-  \item{maxA }{maximum values for A
   }
   \item{jmpType }{one of "default", "estimate" or "covar"; if default, jmpA and jmpX
     are the jump lengths. if jmpA or jmpX is a number,
@@ -57,6 +52,12 @@
   }
   \item{initA }{ratio matrix used to start the markov chain:
       default the input ratio matrix A
+  }
+  \item{priorA }{"normal" (gaussian - default) or "uniform"
+  }
+  \item{minA }{minimum values for A
+  }
+  \item{maxA }{maximum values for A
   }
   \item{var0 }{initial model variance; if 'NULL', then the model
       variance of tlsce(A,B,...) is used
