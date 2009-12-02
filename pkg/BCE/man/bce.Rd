@@ -13,7 +13,7 @@
 \usage{bce(A, B, Wa=NULL, Wb=NULL,
        jmpType="default", jmpA=.1,jmpX=.1, jmpCovar=NULL,
        initX=NULL, initA=NULL, priorA="normal", minA=NULL, maxA=NULL, 
-       var0=NULL, wvar0=1, Xratios=TRUE, verbose=TRUE, ...)
+       var0=NULL, wvar0=0, Xratios=TRUE, verbose=TRUE, ...)
 }
 \arguments{
   \item{A }{input (group) ratio matrix; can be a matrix or a dataframe
