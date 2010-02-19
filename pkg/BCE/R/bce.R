@@ -52,7 +52,8 @@ bce <- function(
     npig <- nrow(A0)
     algnames   <- colnames(A0)       # number & names of taxonomic groups
     stnames    <- colnames(B0)       # number & names of stations or samples
-    pignames   <- rownames(A0)       # number & names of biomarkers    lr <- npig*nalg
+    pignames   <- rownames(A0)       # number & names of biomarkers
+    lr <- npig*nalg
     if (is.null(algnames)) algnames <- 1:nalg
     if (is.null(stnames)) stnames <- 1:nst
     if (is.null(pignames)) pignames <- 1:npig
