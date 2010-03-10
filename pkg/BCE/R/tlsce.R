@@ -23,8 +23,9 @@ tlsce <- function(A,
     ##=================##
     ## initialisations ##
     ##=================##
-    
-    if (is.vector(B)) B <- as.matrix(B)
+
+    A <- as.matrix(A)
+    B <- as.matrix(B)
     
     l <- nrow(A)                        # number of pigments
     m <- ncol(A)                        # number of species

@@ -37,11 +37,17 @@ summary.bce <- function(object,           # a bce-object, output of the function
         best.pars <- object$pars[which.min(object$SS),]
         sd.pars <- apply(object$pars,2,sd)
         last.pars <- object$pars[nrow(object$pars),]
-        
+        median.pars <- apply(object$pars,2,quantile,probs=1/2)
+        ub.pars <- apply(object$pars,2,quantile,probs=(1+confInt)/2)
+        lb.pars <- apply(object$pars,2,quantile,probs=(1-confInt)/2)
+                         
         mean.A <- w; mean.A[w] <- mean.pars[1:lw]
         best.A <- w; best.A[w] <- best.pars[1:lw]
         sd.A <- w; sd.A[w] <- sd.pars[1:lw]
         last.A <- w; last.A[w] <- last.pars[1:lw]
+        median.A <- w; median.A[w] <- median.pars[1:lw]
+        ub.A <- w; ub.A[w] <- ub.pars[1:lw]
+        lb.A <- w; lb.A[w] <- lb.pars[1:lw]
 
         if (Xratios)
           {
@@ -54,17 +60,26 @@ summary.bce <- function(object,           # a bce-object, output of the function
             sd.X <- apply(mcmc.X,1:2,sd)
             last.Q <- matrix(last.pars[-(1:lw)],nrow=nalg-1)
             last.X <- Z%*%last.Q+P
+            median.Q <- matrix(median.pars[-(1:lw)],nrow=nalg-1)
+            median.X <- Z%*%median.Q+P
+            ub.Q <- matrix(ub.pars[-(1:lw)],nrow=nalg-1)
+            ub.X <- Z%*%ub.Q+P
+            lb.Q <- matrix(lb.pars[-(1:lw)],nrow=nalg-1)
+            lb.X <- Z%*%lb.Q+P
           } else {
             mean.X <- matrix(mean.pars[-(1:lw)],nrow=nalg)
             best.X <- matrix(mean.pars[-(1:lw)],nrow=nalg)
             sd.X <- matrix(sd.pars[-(1:lw)],nrow=nalg)
             last.X <- matrix(last.pars[-(1:lw)],nrow=nalg)
+            median.X <- matrix(median.pars[-(1:lw)],nrow=nalg)
+            ub.X <- matrix(ub.pars[-(1:lw)],nrow=nalg)
+            lb.X <- matrix(lb.pars[-(1:lw)],nrow=nalg)
           }
 
-        rownames(mean.A) <- rownames(best.A) <- rownames(sd.A) <- rownames(last.A) <- pignames
-        colnames(mean.A) <- colnames(best.A) <- colnames(sd.A) <- colnames(last.A) <- 
-          rownames(mean.X) <- rownames(best.X) <- rownames(sd.X) <- rownames(last.X) <- algnames
-        colnames(mean.X) <- colnames(best.X) <- colnames(sd.X) <- colnames(last.X) <- stnames
+        rownames(mean.A) <- rownames(best.A) <- rownames(sd.A) <- rownames(last.A) <- rownames(median.A) <- rownames(ub.A) <- rownames(lb.A) <- pignames
+        colnames(mean.A) <- colnames(best.A) <- colnames(sd.A) <- colnames(last.A) <- colnames(median.A) <- colnames(ub.A) <- colnames(lb.A) <- 
+          rownames(mean.X) <- rownames(best.X) <- rownames(sd.X) <- rownames(last.X) <- rownames(median.X) <- rownames(ub.X) <- rownames(lb.X) <- algnames
+        colnames(mean.X) <- colnames(best.X) <- colnames(sd.X) <- colnames(last.X) <- colnames(median.X) <- colnames(ub.X) <- colnames(lb.X) <- stnames
 
         return(list(meanA=mean.A,
                     meanX=mean.X,
@@ -74,8 +89,13 @@ summary.bce <- function(object,           # a bce-object, output of the function
                     sdX=sd.X,
                     lastA=last.A,
                     lastX=last.X,
+                    medianA=median.A,
+                    medianX=median.X,
+                    ubA=ub.A,
+                    ubX=ub.X,
+                    lbA=lb.A,
+                    lbX=lb.X,
                     covar=covariance))
-        
         
         
       } else {
@@ -90,10 +110,10 @@ summary.bce <- function(object,           # a bce-object, output of the function
           w <- which.max(logp)
           bestLogp <- logp[w]
 
-          quantile1 <- function(x) quantile(x,probs=c((1-confInt)/2,1/2,(1+confInt)/2))
-
           bestRat <- Rat[,,w]
           meanrat <- rowMeans(Rat,dims=2)
+
+          quantile1 <- function(x) quantile(x,probs=c((1-confInt)/2,1/2,(1+confInt)/2))
           quantilerat <- apply(Rat,1:2,quantile1)
           lbrat <- quantilerat[1,,]
           ubrat <- quantilerat[3,,]
