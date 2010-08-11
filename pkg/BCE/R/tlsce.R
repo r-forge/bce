@@ -17,6 +17,7 @@ tlsce <- function(A,
                   maxA=NULL,
                   A_init=A,
                   Xratios=TRUE,
+                  ## chemtax=FALSE,
                   ...)         
   {
 
@@ -33,17 +34,39 @@ tlsce <- function(A,
     w <- which(A>0)
     lw <- length(w)
     A_c <- A[w]                         # non-zero elements of A
-    if (Xratios) {
+    if (Xratios#|chemtax
+        ) {
       E <- t(rep(1,m)); F <- t(rep(1,n))} else {
         E <- t(rep(0,m)); F <- t(rep(0,n))} # sum of species fractions is 1 or not
     G <- diag(1,m); H <- matrix(0,m,n)  # all elements positive
-    if (is.null(Wa)) Wa_c <- rep(1,lw)  # weighting of elements of A and B
-    if (length(Wa)==1) Wa_c <- rep(Wa,lw)
+    if (is.null(Wa)) Wa <- 1            # weighting of elements of A and B
+    if (length(Wa)==1) Wa <- matrix(Wa,l,m)
     if (length(Wa)==length(A)) Wa_c <- Wa[w]
-    if (length(Wb)==1) Wb <- matrix(Wb,l,m)
+    if (length(Wb)==1) Wb <- matrix(Wb,l,n)
     A_c_init <- A_init[w]
     if (is.null(minA)) minA_c <- rep(0,lw) else minA_c <- minA[w]
     if (is.null(maxA)) maxA_c <- rep(+Inf,lw) else maxA_c <- maxA[w]
+    
+    ##     if (chemtax)
+    ##       {
+    ##         A_rescaled <- rbind(A,1)
+    ##         A_rescaled <- A_rescaled/rep(colSums(A_rescaled),each=l+1)
+    ##         B_rescaled <- rbind(B,1)
+    ##         B_rescaled <- B_rescaled/rep(colSums(B_rescaled),each=l+1)
+    ##         if (!is.null(Wb)) Wb_rescaled <- rbind(Wb,1)
+    ##         Wa_rescaled <- rbind(Wa,colMeans(Wa)) ## ad hoc solution...
+    
+    ##         residuals <- function(A_c_new)
+    ##           {
+    ##             A_new <- A
+    ##             A_new[w] <- A_c_new
+    ##             A_new_rescaled <- rbind(A_new,1)
+    ##             A_new_rescaled <- A_new_rescaled/rep(colSums(A_new_rescaled),each=l+1)
+    ##             X <- LSEI(A_new_rescaled,B_rescaled,E,F,G,H,Wa=Wb)$X
+    ##             if (is.null(Wb)) return(c(Wa_rescaled*(A_new_rescaled-A_rescaled),A_new_rescaled%*%X-B_rescaled))
+    ##             return(c(Wa_rescaled*(A_new_rescaled-A_rescaled),Wb_rescaled*(A_new_rescaled%*%X-B_rescaled)))
+    ##           }
+    ##       } else {
     residuals <- function(A_c_new)
       {
         A_new <- A
@@ -52,6 +75,7 @@ tlsce <- function(A,
         if (is.null(Wb)) return(c(Wa_c*(A_c-A_c_new),A_new%*%X-B))
         return(c(Wa_c*(A_c-A_c_new),Wb*(A_new%*%X-B)))
       }
+    ##      }
 
     
     ##===========##
@@ -67,9 +91,21 @@ tlsce <- function(A,
     
     A_c_fit <- tlsce_fit$par
     A_fit <- A; A_fit[w] <- A_c_fit
-    LSEI_fit <- LSEI(A_fit,B,E,F,G,H,Wa=Wb)
-    X <- LSEI_fit$X; rownames(X) <- colnames(A); colnames(X) <- colnames(B)
-    B_fit <- A_fit%*%X
+##     if (chemtax)
+##       {
+##         A_fit_rescaled <- rbind(A_fit,1)
+##         A_fit_rescaled <- A_fit_rescaled/rep(colSums(A_fit_rescaled),each=l+1)
+##         LSEI_fit <- LSEI(A_fit_rescaled,B_rescaled,E,F,G,H,Wa=Wb)
+##         X <- LSEI_fit$X; rownames(X) <- colnames(A); colnames(X) <- colnames(B)
+##         B_fit_rescaled <- A_fit_rescaled%*%X
+##         B_fit <- B_fit_rescaled[-(l+1),]/rep(B_fit_rescaled[l+1,],each=l)
+##       }
+##     else
+##       {
+        LSEI_fit <- LSEI(A_fit,B,E,F,G,H,Wa=Wb)
+        X <- LSEI_fit$X; rownames(X) <- colnames(A); colnames(X) <- colnames(B)
+        B_fit <- A_fit%*%X
+##      }
     ssr <- tlsce_fit$ssr
     ssr_B <- LSEI_fit$solutionNorm
     ssr_A <- ssr-ssr_B

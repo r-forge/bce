@@ -229,7 +229,7 @@ X <- BCE(bceInput$Rat,bceInput$Dat,relsdRat=.2,relsdDat=.2,
          iter=1000,outputlength=5000,jmpX=.01,jmpRat=.01)
 
 ## the number of accepted runs is too low;
-## we play around with the jump lengths jmpx and jmprat
+## we play around with the jump lengths jmpX and jmpRat
 
 X <- BCE(bceInput$Rat,bceInput$Dat,relsdRat=.2,relsdDat=.2,
          iter=1000,outputlength=5000,jmpX=.02,jmpRat=.002)

@@ -1,8 +1,8 @@
 \name{pairs.bce}
 \alias{pairs.bce}
-\title{A pairs plot of a BCE}
+\title{Pairs plot of a BCE}
 \description{
-  produces a pairs plots of the random walks of the BCE.
+  produces pairs plots of the random walks of the BCE.
 }
 \usage{pairs.bce(x,sample=1,gap=0,upper.panel = NA,
   diag.panel = NA,...)

@@ -9,7 +9,7 @@
 ## work in progress
 ################################################################################
 
-bce <- function(
+bce1 <- function(
                 ## parameters
                 A,
                 B,

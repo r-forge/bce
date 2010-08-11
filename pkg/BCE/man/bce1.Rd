@@ -1,4 +1,5 @@
-\name{bce}
+\name{bce1}
+\alias{bce1}
 \alias{bce}
 \title{Bayesian Composition Estimator}
 \description{
@@ -10,7 +11,7 @@
   Probability distributions are estimated based on an adaptive metropolis
   MCMC method, function \code{modMCMC} from package \code{FME}.
 }
-\usage{bce(A, B, Wa=NULL, Wb=NULL,
+\usage{bce1(A, B, Wa=NULL, Wb=NULL,
        jmpType="default", jmpA=.1,jmpX=.1, jmpCovar=NULL,
        initX=NULL, initA=NULL, priorA="normal", minA=NULL, maxA=NULL, 
        var0=NULL, wvar0=0, Xratios=TRUE, verbose=TRUE, ...)
@@ -76,7 +77,7 @@
   }
 }
 \details{
-  The function \code{bce} searches probability distributions for all
+  The function \code{bce1} searches probability distributions for all
   elements of a taxonomical composition matrix \code{X} and a ratio
   matrix \code{A} for which:
 
@@ -190,41 +191,53 @@
 ##====================================
 
 # example using bceInput data
-# first try
+# !!! should be weighted to correspond better to example of BCE!!!
+A <- t(bceInput$Rat)
+B <- t(bceInput$Dat)
 
-X <- BCE(bceInput$Rat,bceInput$Dat,relsdRat=.2,relsdDat=.2,
-         iter=1000,outputlength=5000,jmpX=.01,jmpRat=.01)
 
-## the number of accepted runs is too low;
-## we play around with the jump lengths jmpx and jmprat
+result <- bce1(A,B,iter=1000)
 
-X <- BCE(bceInput$Rat,bceInput$Dat,relsdRat=.2,relsdDat=.2,
-         iter=1000,outputlength=5000,jmpX=.02,jmpRat=.002)
+## the number of accepted runs is zero;
+## try different starting values
+
+result <- bce1(A,B,iter=1000,initX=matrix(1/ncol(A),ncol(A),ncol(B)))
+
+## number of accepted runs is still low;
+## smaller jumps
+
+result <- bce1(A,B,iter=1000,initX=matrix(1/ncol(A),ncol(A),ncol(B)),jmpA=.01,jmpX=.01)
+Sum <-summary(result)
+
+## did the algorithm converge?
+plot(result$SS,type="l")
+## no
+
+
+## more runs, using the output of previous run as input.
+result <- bce1(A,B,niter=1e4,jmpA=.01,jmpX=.01,updatecov=1e3,
+               initX=Sum$lastX,initA=Sum$lastA,
+               jmpCovar=Sum$covar*2.4^2/ncol(result$pars),
+               )
+Sum <-summary(result)
 
 ## we inspect the output:
-plot(X)
+plot(result$SS,type="l")
+plot(result,ask=TRUE)
+## looks already pretty good; repeat one more time, longer run
+## go get some coffee, this might take a while (~30s).
 
-## For every element of X and Rat, we want to obtain a well-mixed,
-## random trace. In this case, mixing is still a little poor.
-## to optimize mixing in the ratio matrix, it is a good idea
-## to make the jump length linear to the ratio matrix
-## standard deviation (sdrat=.2*rat) :
-X <- BCE(bceInput$Rat,bceInput$Dat,relsdRat=.2,relsdDat=.2,
-         iter=1000,outputlength=5000,jmpX=.02,
-         jmpRat=.2*(.2*bceInput$Rat))
-plot(X)
+result <- bce1(A,B,niter=1e5,jmpA=.01,jmpX=.01,updatecov=1e3,
+               outputlength=1e3,burninlength=.35e5,
+               initX=Sum$lastX,initA=Sum$lastA,
+               jmpCovar=Sum$covar*2.4^2/ncol(result$pars),
+               )
+Sum <-summary(result)
 
-## mixing improved a lot; we repeat the run with more iterations
-## to improve the reliability of the results.
-## the following run can take a few minutes - so it is toggled off
-#X <- BCE(bceInput$Rat,bceInput$Dat,relsdRat=.2,relsdDat=.2,
-#         iter=100000,outputlength=5000,jmpX=.02,
-#         jmpRat=.2*(.2*bceInput$Rat))
-#plot(X)
-## you can see in the plots that traces for all elements of Rat and X
-## are well-mixed. This run was saved in "bceOutput"
-
-Sum <-summary(bceOutput)
+## we inspect the output (again ;)):
+plot(result$SS,type="l")
+plot(result,ask=TRUE)
+## ok
 
 # show results as mean with ranges
 print(Sum$meanX)
@@ -233,6 +246,7 @@ print(Sum$meanX)
 xlim <- range(c(Sum$lbX,Sum$ubX))
 
 # first the mean
+X11()
 dotchart(x=t(Sum$meanX),xlim=xlim,                                                          
          main="Taxonomic composition",
          sub="using bce",pch=16)
@@ -242,13 +256,10 @@ nr <- nrow(Sum$meanX)
 nc <- ncol(Sum$meanX)
 
 for (i in 1:nr) 
-{ip <-(nr-i)*(nc+2)+1
- cc <- ip : (ip+nc-1)
- segments(t(Sum$lbX[i,]),cc,t(Sum$ubX[i,]),cc)
- }
-
-# show results as pairs plot
-pairs(bceOutput,sample=3,main="Station 3")
+  {ip <-(nr-i)*(nc+2)+1
+   cc <- ip : (ip+nc-1)
+   segments(t(Sum$lbX[i,]),cc,t(Sum$ubX[i,]),cc)
+  }
 
 }
 \author{Karel Van den Meersche <k.vdmeersche@nioo.knaw.nl>,
