@@ -152,7 +152,7 @@
     between 5\% and 40\%. For long runs, 5 \% can be acceptable, for
     short runs, you will prefer a higher acceptance in order to have
     enough different points. 20\% accepted is usually a good number. Do
-    some preliminary runs with \code{iter=1000-10000} and tune the
+    some preliminary runs with \code{niter=1000-10000} and tune the
     jump length parameters \code{jmpRat} and \code{jmpX}. You can set
     different jump lengths for each column of
     the ratio matrix, or 1 jump length for the whole ratio matrix, and 1
@@ -173,7 +173,7 @@
     '\code{burninlength}' cycles will not be written to the output. Look
     at some plots to determine if you need to specify a burnin length.}
 
-    \item{\bold{iter} }{the number of iterations: start with 10000 runs
+    \item{\bold{niter} }{the number of iterations: start with 10000 runs
     or less; check the output and estimate how many runs you will need
     to get a random pattern in the output.}
   }
@@ -199,17 +199,17 @@ A <- t(bceInput$Rat)
 B <- t(bceInput$Dat)
 
 
-result <- bce1(A,B,iter=1000)
+result <- bce1(A,B,niter=1000)
 
 ## the number of accepted runs is zero;
 ## try different starting values
 
-result <- bce1(A,B,iter=1000,initX=matrix(1/ncol(A),ncol(A),ncol(B)))
+result <- bce1(A,B,niter=1000,initX=matrix(1/ncol(A),ncol(A),ncol(B)))
 
 ## number of accepted runs is still low;
 ## smaller jumps
 
-result <- bce1(A,B,iter=1000,initX=matrix(1/ncol(A),ncol(A),ncol(B)),jmpA=.01,jmpX=.01)
+result <- bce1(A,B,niter=1000,initX=matrix(1/ncol(A),ncol(A),ncol(B)),jmpA=.01,jmpX=.01)
 Sum <-summary(result)
 
 ## did the algorithm converge?

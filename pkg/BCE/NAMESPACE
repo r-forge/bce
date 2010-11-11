@@ -1,2 +1,2 @@
-export(bce1,BCE, plot.bce, pairs.bce, export.bce, summary.bce, rescaleRows, tlsce)
+export(bce1, BCE, plot.bce, pairs.bce, export.bce, summary.bce, rescaleRows, tlsce)
 
