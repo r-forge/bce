@@ -14,7 +14,7 @@
 \usage{bce1(A, B, Wa=NULL, Wb=NULL,
        jmpType="default", jmpA=.1,jmpX=.1, jmpCovar=NULL,
        initX=NULL, initA=NULL, priorA="normal", minA=NULL, maxA=NULL, 
-       var0=NULL, wvar0=0, Xratios=TRUE, verbose=TRUE, ...)
+       var0=NULL, wvar0=0.001, Xratios=TRUE, verbose=TRUE, ...)
 }
 \arguments{
   \item{A }{input (group) ratio matrix; can be a matrix or a dataframe
@@ -64,7 +64,10 @@
       variance of tlsce(A,B,...) is used
   }
   \item{wvar0 }{relative weight of the initial model variance
-    (see modMCMC)
+    (see modMCMC). Ideally this would be 0 (initial model variance is
+  not taken into account); because wvar0=0 is a special case in
+  modMCMC() (fixed model variance), the default value is set to a small
+  number (wvar0=1e-4)
   }
   \item{Xratios }{does the composition matrix contain ratios (TRUE) or
       estimated biomass concentrations (TRUE) per sample? In the
