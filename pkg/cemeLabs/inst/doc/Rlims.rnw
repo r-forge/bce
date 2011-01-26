@@ -1,0 +1,687 @@
+\documentclass[article,nojss]{jss}
+\DeclareGraphicsExtensions{.pdf,.eps}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Add-on packages and fonts
+\usepackage{graphicx}
+\usepackage{amsmath}
+
+
+\newcommand{\noun}[1]{\textsc{#1}}
+%% Bold symbol macro for standard LaTeX users
+\providecommand{\boldsymbol}[1]{\mbox{\boldmath $#1$}}
+
+%% Because html converters don't know tabularnewline
+\providecommand{\tabularnewline}{\\}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\newcommand{\cl}{\textbf{\textsf{Rlims }}}
+\newcommand{\R}{\proglang{R}}
+\title{
+  \cl : utilities for processing laboratory analyses from NIOO-CEME
+}
+\Plaintitle{Rlims}
+
+\Keywords{
+  fatty acids, chromatogram, NIOO-CEME, \proglang{R}
+}
+
+\Plainkeywords{
+  fatty acids, chromatogram, NIOO-CEME, R
+}
+
+
+\author{
+Karline Soetaert\\
+NIOO-CEME\\
+The Netherlands
+\And
+Pieter Provoost\\
+NIOO-CEME\\
+The Netherlands
+\And
+Pieter van Rijswijk\\
+NIOO-CEME\\
+The Netherlands
+}
+
+\Plainauthor{Karline Soetaert, Pieter Provoost, Pieter van Rijswijk}
+
+\Abstract{
+  \R package \cl contains utilities to convert the files resulting from
+  lab analyses performed on the GC-FID and GC-c-IRMS in NIOO-CEME.
+  
+  These R-functions are meant as an alternative to the EXCEL spreadsheet with
+  VBA macro originally developed by Pieter van Rijswijk.
+
+  In addition, it contains documents with the lab procedures.
+}
+
+%% The address of (at least) one author should be given
+%% in the following format:
+\Address{
+  Karline Soetaert\\
+  Centre for Estuarine and Marine Ecology (CEME)\\
+  Netherlands Institute of Ecology (NIOO)\\
+  4401 NT Yerseke, Netherlands\\
+  E-mail: \email{k.soetaert@nioo.knaw.nl}\\
+  URL: \url{http://www.nioo.knaw.nl/users/ksoetaert}\\
+  Pieter Provoost\\
+  Centre for Estuarine and Marine Ecology (CEME)\\
+  Netherlands Institute of Ecology (NIOO)\\
+  4401 NT Yerseke, Netherlands\\
+  E-mail: \email{p.provoost@nioo.knaw.nl}
+  Pieter van Rijswijk\\
+  Centre for Estuarine and Marine Ecology (CEME)\\
+  Netherlands Institute of Ecology (NIOO)\\
+  4401 NT Yerseke, Netherlands\\
+  E-mail: \email{p.vanRijswijk@nioo.knaw.nl}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% R/Sweave specific LaTeX commands.
+%% need no \usepackage{Sweave}
+%\VignetteIndexEntry{Rlims: utilities for laboratory analyses performed at NIOO-CEME}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Begin of the document
+\begin{document}
+\SweaveOpts{engine=R,eps=FALSE}
+\SweaveOpts{keep.source=TRUE}
+
+<<preliminaries,echo=FALSE,results=hide>>=
+library("Rlims")
+options(prompt = "> ")
+options(width=75)
+@
+
+\maketitle
+
+\section{Introduction}
+  \R-package \cl is a tool, running in \R, to convert files from
+  the analysis lab at NIOO-CEME in a more suitable format.
+  
+  It contains two main functions:
+  \begin{itemize}
+    \item fa.fid, a utility function to convert chromatogram data from the
+      GC-FID carlo erba HRGC mega 2 GC.   
+    \item fa.irms, a utility function to convert chromatogram data from the
+      gas-chromatograph combustion interface isotope-ratio mass spectrometer
+     (GC-c-IRMS)
+   \end{itemize}
+
+   In addition, there are three documents, so-called package ``vignettes''
+   (R-jargon for manuals). They describe the analytical procedure to analyse
+   stable isotopic ratios in PLFA, in HAA and how to work with the GC-IRMS.
+   To open them from R: you can type
+   \begin{verbatim}
+   vignette("PLFA")
+   vignette("HAA")
+   vignette("GC-IRMS")
+   \end{verbatim}
+\section{GC-FID data}
+  \subsection{Preparing GC-FID Input files}
+
+  The GC-FID (Gas Chromatograph - Flame Ionization Detector) instrument 
+  produces a binary file, which is processed with dedicated software and 
+  produces an EXCEL spreadsheet (see fig. \ref{fig:excel}).
+  
+  To be used with the \code{fa.fid} R-function this spreadsheet has to be
+  written as a csv-file.
+  
+  This file contains several columns, typically called:
+  ``Peak Number'', ``Retention Time'', ``Peak Height'', ``Area'', `
+  `Component Name'', ``Original Conc'', ``Solution Conc'', ``Width at 50%''.
+
+  Of these, only the columns with peak numbers, retention time, area and
+  component name, as suggested by the anlytical lab, will be retained.
+
+  Also, the Sample ID (The LIMS number) and the name of the chromatogram
+  (also the file's base name) will be kept.
+\setkeys{Gin}{width=0.6\textwidth}
+\begin{figure}
+\begin{center}
+\includegraphics{Rawinput.pdf}
+\end{center}
+\caption{Excel input sheet as produced by the CEME lab}
+\label{fig:excel}
+\end{figure}
+
+\setkeys{Gin}{width=0.6\textwidth}
+\begin{figure}
+\begin{center}
+\includegraphics{Converted.pdf}
+\end{center}
+\caption{Converted sheet; the header has been removed, as well as the
+line with units below the column header; 
+this should be exported as a csv file.}
+\label{fig:csv}
+\end{figure}
+
+  \subsection{Analytical Column Input Data for GC-FID}
+
+  In addition to the input data, the analytical column used  also needs to
+  be given.
+  
+  The following analytical columns for GC-FID are included in the package:
+  \begin{itemize}
+    \item \code{fid.bpx70}, the BPX70 (GC-04 PTV); date June 2008
+    \item \code{fid.zb5}, the ZB-5 column (GC-05 SSL LV); date March 2008
+    \item \code{fid.apolar}, the ``a-polar'' data
+    \item \code{fid.polar1}, the ``polar bpx70'' data from Eric Boschker
+    \item \code{fid.polar2}, the ``polar bpx70'' data from Marco Houtekamer;
+      date nov 2004
+   \end{itemize}
+  It is also possible to use as input a ``csv'' file, which should have at least
+  two data-columns:
+  \begin{itemize}
+    \item a column named ``ecl'' and containing the equivalent chain lengths
+    \item a column called ``name'', containing the equivalent chainwith the name of the FA.
+  \end{itemize}
+  This reference data set can be read with R-function \code{read.csv}.
+  \subsection{Other Input}
+  You need to input also other information:
+  \begin{itemize}
+   \item Standards whose ecl (equivalent chain length) and retention
+  times are known. They are used to calculate the ecl of the other peaks.
+  Typically, there are three standards: ``C12:0'', ``C16:0'', and ``C19:0''.
+  If you do not know the ecls of these standards, they can be derived from
+  the input data.
+   \item The quantity of the standard, which has been added during the
+  analytical procedure.  For GC-FID, this quantity should be expressed in $\mu g$ PLFA. Usually one adds ``C19:0'' in a quantity equal to $\approx 2.01 \mu g$ PLFA.
+  See section \ref{sec:standard}.
+  The peak of this standard will be used to scale the
+  other peaks such as to reproduce the quantity of the other FAs.
+  It is assumed that this fa is not present in natural samples.
+   \item The quantity of the sample added.
+   \item The recovery. During the analytical procedure, one adds a certain volume
+  of chloroform, and one weights the chloroform recovered. These two measurements
+  are also required to estimate the recovery of the analytical procedure.
+  \end{itemize}
+
+\section{GC-c-IRMS data}
+  \subsection{Preparing Input for GC-c-IRMS data analysis}
+  The GC-c-IRMS (Gas Chromatograph - combustion interface isotope-ratio
+  mass spectrometer) instrument also produces a binary file, which is
+  processed with dedicated software and produces an EXCEL spreadsheet.
+
+  To be used with the \code{fa.irms} R-function this spreadsheet has to be
+  converted similarly as for \code{fa.fid} data; this means that it
+  needs to be presented as a \emph{csv} file with the initial part of the
+  file removed.
+
+  From this file, the columns with peak numbers, retention time, area and
+  component name, and stable isotopic composition will be retained.
+
+  \subsection{Analytical Column Input Data for GC-irms}
+  The same analytical columns as for GC-FID can be used (????CHECK????)
+
+  \subsection{Other Input}
+  The same additional input as for GC-FID is required (see also above):
+  \begin{itemize}
+  \item ecl standards.
+  \item The quantity of the standard added. **NOTE** for GC-c-IRMS, this quantity should be expressed in $\mu$g Carbon, rather than in $\mu$g PLFA.
+  Typically, this value is $\approx$ 1.54. See section \ref{sec:standard}.
+  \item The quantity of the sample added.
+  \item The volume chloroform added, and weight recovered.
+  \end{itemize}
+\section{Analysing the Chromatogram Data}
+There are two ways in which the chromatogram data may be analysed:
+\begin{itemize}
+\item In 6 steps, using several utility functions.
+\item in one step, using functions \code{fa.fid}, or \code{fa.irms}
+\end{itemize}
+\subsection{Step-wise analysis}
+Several R-functions perform specific calculations on a chromatogram. They are defined as:
+\begin{verbatim}
+read.fid(filename)
+read.irms(filename)
+
+get.standard(input, standard.ecl = list(time = c(12, 16, 19),
+                                        ecl = c(12, 16, 19),
+                                        name = c("C12:0", "C16:0", "C19:0")),
+             ecl.interval = 0.02, verbose = TRUE)
+
+add.ecl     (input, standard.ecl)
+
+clean.peaks (input, peak.interval = 0.02, min.area = 0, verbose = TRUE)
+
+get.peaks   (input, fa.ref, peak.interval = 0.02, verbose = TRUE)
+
+get.conc.fid  (input, standard.qty, sample.qty,
+                   chlor.volume, chlor.weight, standard.name = "C19:0"))
+get.conc.irms (input, standard.qty, sample.qty,
+               chlor.volume, chlor.weight, standard.name = "C19:0",
+               d13C.meth = -45.6))
+\end{verbatim}
+where:
+  \begin{itemize}
+    \item \code{filename} contains the name of a \emph{csv} input file
+    \item \code{input} contains a \code{data.frame}
+      with a previously loaded input file
+    \item \code{fa.ref} is the name of the reference column used.
+      The default is the \code{bpx70} column
+    \item \code{standard.ecl}\$\code{time}, is the retention times of the standard
+    \item \code{standard.ecl}\$\code{ecl}, is the standard equivalent chain length
+    \item \code{standard.qty}, \code{standard.name} is the quantity and name of the standard added to calculate concentrations.
+    \item \code{sample.qty}, is the quantity of the sample added
+    \item \code{chlor.volume}, is the volume chloroform added
+    \item \code{chlor.weight}, is the weight of the chloroform recovered
+    \item \code{peak.interval}, \code{ecl.interval}, are the precision or interval in
+      equivalent chain length units with which the standard peaks
+      or standard ecls are distinguished
+    \item \code{min.area},  the minimal area below which the peaks are ignored
+    \item \code{d13C.meth}, the delta 13C value of the methyl group added when using
+    the IRMS
+  \end{itemize}
+
+
+\subsection{Functions fa.fid and fa.irms}
+  Functions \code{fa.fid} and \code{fa.irms} analyse the input data produced by 
+  the GC-FID and GC-IRMS respectively in one step.
+  
+  They are very similar and defined as:
+  
+  \begin{verbatim}
+fa.fid (input, fa.ref = fid.bpx70,
+        standard.ecl = list(time = c(12, 16, 19),
+                            ecl = c(12, 16, 19),
+                            name = c("C12:0", "C16:0", "C19:0")),
+        standard.qty, sample.qty = 1,
+        chlor.volume, chlor.weight,
+        peak.interval = 0.02, ecl.interval = 0.02,
+        min.area = 0, accept = NULL, verbose = TRUE)
+
+fa.irms(input, fa.ref = irms.bpx70,
+       standard.ecl = list(time = c(800, 1600, 2000),
+                           ecl  = c(12, 16, 19),
+                           name = c("C12:0", "C16:0", "C19:0")),
+       standard.qty, sample.qty = 1,
+       chlor.volume, chlor.weight,
+       peak.interval = 0.02, ecl.interval = 20,
+       min.area = 0, d13C.meth = -45.6,
+       accept = NULL, verbose = TRUE)
+\end{verbatim}
+  
+  where the arguments are as above, except for ``input'' which can be either
+  an input file name or a \code{data.frame} as produced with \code{read.fid} or
+  \code{read.irms}.
+\subsection{Example of GC-FID data}
+For example, in the following code, a data set and reference column
+is first read from file, after loading library \code{Rlims}.
+To read the data set, R-function \code{read.fid} is used; the reference data set
+is read with \code{read.csv}.
+\subsubsection{reading input files}
+<<>>=
+library(Rlims)
+fid.data <- read.fid("input_fid.csv")
+fid.ref  <- read.csv("reference_fid.csv")
+@
+We look at the first part  (\code{head}) of these input data (\code{fid.data}) and reference data (\code{fid.ref}):
+<<>>=
+head(fid.data)
+head(fid.ref)
+@
+\subsubsection{ecl standards}
+The suggested standards from the anlytical lab are:
+<<>>=
+standard.ecl <- list(time = c(17.007, 31.16, 41.3),
+                     ecl  = c(12, 16, 19),
+                     name = c("C12:0", "C16:0", "C19:0"))
+@
+We use those to get the standars compatible with the input data (\code{standard.new}):
+<<>>=
+standard.new <- get.standard (fid.data, standard.ecl, ecl.interval = 0.02)
+standard.new
+@
+The new values are slightly different from the original ones, but they fall
+within the \code{ecl.interval}, which is by default equal to 0.02.
+
+\subsubsection{equivalent chain lengths}
+Next we add the equivalent chain lengths; the new data set is now called \code{fid.ecl}.
+<<>>=
+fid.ecl    <- add.ecl(fid.data, standard.new)
+head(fid.ecl)
+@
+A new column with equivalent chain lengths (ecl) of each peak has been added.
+
+\subsubsection{cleanup peaks}
+Now we cleanup the input, by removing peaks too close to one another and removing peaks whose ``area'' is too low, and considered noise.
+The new data set is called \code{fid.clean}
+
+We first assume nothing is noise (hence \code{min.area = 0}).
+<<>>=
+fid.clean  <- clean.peaks(fid.ecl, peak.interval = 0.02, min.area = 0)
+@
+Note the warnings.
+
+The first warning means that no peaks are below the \code{min.area}.
+
+Next warnings mean that some peaks are too close to be distinguished.
+By default, the function then removes the smaller peak.
+Here peaks 16, 17, and 18 were too close; so both peak 16 and 17 were removed,
+while peak 18, which has the largest area, was kept:
+<<>>=
+fid.clean[12:17,]
+@
+
+Alternatively, we can also cleanup the chromatogram by using a ``noise level'' to get rid of peaks that are too small; thus we exclude all peaks whose area is lower than a minimal value (\code{min.area}); here we use a minimal value of 100000.
+<<>>=
+fid.clean <- clean.peaks(fid.ecl, peak.interval = 0.02, min.area = 100000)
+head(fid.clean)
+@
+
+\subsubsection{identify peaks}
+Now we identify peaks by comparing with the reference column, using function \code{get.peaks}:
+<<>>=
+fid.new  <- get.peaks(fid.clean, fa.ref = fid.ref, peak.interval = 0.02)
+@
+Note the warning that some peaks are unknown, i.e. they cannot be given names, because they are not within the \code{peak.interval} from a known peak.
+<<>>=
+fid.new[5:10,]
+@
+A number of new columns have been added:
+\begin{itemize}
+\item column ``name'' contains the suggested name of the peak, based on the reference column; unknown peaks have the prefix ``UNKN'' followd by a suggested name (the peak that was closest).
+\item Column ``numpeaks'' contains the number of peaks from the reference column that were close enough (i.e. whose ecl was $<$ \code{peak.interval}.
+\item Column ``distance'' refers to the distance of the peak to the nearest reference peak.
+\end{itemize}
+
+Note that the new name does not always correspond with the original name - if that happens, and it is important - check and ask the head of the analytical lab what to do!
+
+Other new names have the label "UNKN" in front, while the number of peaks (``numpeaks'') equals $0$.
+In the example this applies to peak number $9$ and the closest reference peak, at distance $0.021$ is named ``ai-C15:0''.
+
+In the next section, it is shown how this can be remediated.
+
+\subsubsection{FA concentrations}
+Finally, we can estimate the concentration of each FA, using the input parameters obtained during the analytical procedure.
+The quantity of the standard added (\code{standard.qty}) was 2.01, sample was added in quantity = 1 (\code{sample.qty}) and the volume chloroform
+used (\code{chlor.volume}) was 15; the weight of chloroform recovered \code{chlor.weight}was 20.
+<<>>=
+fid.final  <- get.conc.fid(fid.new, standard.qty = 2.01, sample.qty = 1,
+                           chlor.volume = 15, chlor.weight = 20)
+head(fid.final)
+@
+Note the two extra columns with the concentration (``conc'') and the
+percentage (``perc'').
+
+\subsection{Same example, one step}
+It is also possible to use function \code{fa.fid} to convert a file to the proper format in one step.
+
+<<>>=
+fid.final <- fa.fid(input = "input_fid.csv", fa.ref = "reference_fid.csv",
+                    standard.ecl = list(time = c(17.007, 31.16, 41.3),
+                                        ecl  = c(12, 16, 19),
+                                        name = c("C12:0", "C16:0", "C19:0")),
+                    standard.qty = 2.01,
+                    chlor.volume = 15, chlor.weight = 20,
+                    min.area = 100000)
+@
+
+\subsection{Troubleshooting ambiguous peaks}
+In the above example, the functions \code{get.peaks} and \code{fa.fid} complain that some peaks cannot unambiguously be attributed to
+a certain fatty acid and need your input.
+
+There are two options when that happens:
+\begin{itemize}
+  \item you accept the defaults, as already present in the input file
+    (not recommended). You do this by running function \code{accept}.
+  \item you go through all problems manually, using the \code{edit} command.
+\end{itemize}
+
+With the \code{accept} command, you can either use the default name as
+estimated by function \code{get.peaks}, or give precedence to the original name from the input file (\code{"orig.name"}):
+<<>>=
+PLFA1 <- accept(fid.final, accept = "name")
+PLFA2 <- accept(fid.final, accept = "orig.name")
+PLFA1[5:10,]
+PLFA2[5:10,]
+@
+Alternatively, we go through each problem manually, each time takeing a decision.
+This is done using the \code{edit} command, which opens R's spreadsheet-like interface
+\begin{verbatim}
+PLFA <- edit(PLFA1)
+\end{verbatim}
+
+This command opens a window like in figure \ref{fig:edit},
+which shows the problems.
+
+For instance,
+\begin{itemize}
+\item on the line 11, the equivalent chain length of \emph{15.79798} is
+closest to the peak corresponding to \emph{2-OH C12:0}, but it differs from the ecl of this plfa with 0.021, which is more than 0.02 (the inputted precision).
+
+As it is likely that this ecl is indeed \emph{2-OH C12:0}, we accept this name and replace the item  \emph{UNKN 2-OH C12:0} with \emph{2-OH C12:0}.
+
+\item On line 2, the suggested name is \emph{C12:0}, but clearly it should be \emph{C10:0}.
+
+\item Another uncertainty of a different kind is the occurrence of multiple peaks, where we have to select the most likely plfa.   (KARLINE: VOORBEELD VERZINNNEN)
+\end{itemize}
+
+The edited PLFA file is in figure \ref{fig:edit2}.
+
+Note that the editor works similar as excel, but is not as flexible;
+use ctrl C and ctrl V (copy-paste), and double click on a cell.
+\setkeys{Gin}{width=0.5\textwidth}
+\begin{figure}
+\begin{center}
+\includegraphics{edit.pdf}
+\end{center}
+\caption{The edit screen that shows the problems for which a decision should
+be taken}
+\label{fig:edit}
+\end{figure}
+
+\setkeys{Gin}{width=0.5\textwidth}
+\begin{figure}
+\begin{center}
+\includegraphics{editnew.pdf}
+\end{center}
+\caption{The edit screen after which a decision has been taken for all problems}
+\label{fig:edit2}
+\end{figure}
+\clearpage
+
+\subsection{Outputting the results}
+After that we can print the results to the screen
+<<>>=
+  PLFA2 [,c("name", "conc")]
+@
+print the inputs of the analysis:
+<<>>=
+  get.diagnostics(PLFA2)
+@
+
+and make a figure:
+
+<<label=plfa,include=FALSE>>=
+  plot(PLFA2, xlab = "ECL", ylab = "peak area", main = "a plfa dataset",
+       marker = fa.marker, lwd = 2)
+@
+<<label=plfa2,include=FALSE>>=
+  barplot(PLFA2, main = "barplot", marker = fa.marker, lwd = 2,
+    col = c("grey","brown","brown","brown",
+            "green2","darkgreen","orange","blue"))
+@
+Note that we use a {data.frame} with biomarker information to give colors to the
+different peaks. In the package is one such data.frame present, called ``fa.marker''.
+Its contents can be visualised with:
+<<>>=
+fa.marker
+@
+\setkeys{Gin}{width=0.9\textwidth}
+\begin{figure}
+\begin{center}
+<<label=plfa,fig=TRUE,echo=FALSE>>=
+<<plfa>>
+@
+\end{center}
+\caption{Plot of the plfa analysis - see text for \R-code}
+\label{fig:plfa}
+\end{figure}
+\setkeys{Gin}{width=0.9\textwidth}
+\begin{figure}
+\begin{center}
+<<label=plfa2,fig=TRUE,echo=FALSE>>=
+<<plfa2>>
+@
+\end{center}
+\caption{Barplot of the plfa analysis - see text for \R-code}
+\label{fig:plfa2}
+\end{figure}
+
+\subsection{Example of GC-c-IRMS data}
+We now analyse a GC-c-IRMS data set, in one step.
+<<>>=
+standard.ecl <- list(time = c(883.5, 1637.8, 2227.2),
+                     ecl  = c(12, 16, 19),
+                     name = c("C12:0", "C16:0", "C19:0"))
+
+irms.final <- fa.irms(input = "input_irms.csv", fa.ref = "reference_irms.csv",
+    standard.ecl = standard.ecl, ecl.interval = 20,
+    standard.qty = 1.55, #accept = "name",
+    chlor.volume = 15, chlor.weight = 20,
+    min.area = 0.2)
+@
+<<label=irms,include=FALSE>>=
+  barplot(irms.final, main = "IRMS", marker = fa.marker, lwd = 2,
+    col = c("grey","brown","brown","brown",
+            "green2","darkgreen","orange","blue"), poslegend = "top")
+@
+\setkeys{Gin}{width=0.9\textwidth}
+\begin{figure}
+\begin{center}
+<<label=irms,fig=TRUE,echo=FALSE>>=
+<<irms>>
+@
+\end{center}
+\caption{Plot of the irms analysis - see text for \R-code}
+\label{fig:irms}
+\end{figure}
+
+\clearpage
+\section{equations}
+The chromatograms obtained from the analytic instruments, are converted to PLFA concentrations using several inputs:
+\begin{itemize}
+\item	the retention times of the standards and their equivalent chain length
+\item	the quantity of the standard added
+\item	the quantity of the sample
+\item	the volume chloroform added
+\item	the weight of chloroform recovered
+\item	the equivalent chain lengths of known PLFAs for the reference column used.
+\end{itemize}
+
+The analysis of individual PLFAs is done based on the relative retention times (RT) of each peak, standardized for the RTs of the standards.
+The PLFAs C12:0 and C19:0 are added as internal standards and C16:0 is always present in samples as one of the main peaks.
+
+The calculation proceeds in two (fid) or three (irms) steps:
+\begin{itemize}
+\item	In a first step, the retention times of peaks are recalculated in equivalent chain lengths (ECL)
+\item In a second step, the PLFA concentration is calculated, based on the amount sample and standard added.
+\item For irms data, the delta values of the PLFAs are then calculated.
+\end{itemize}
+
+\subsection{equivalent chain lengths from retention times}
+
+Given the retention times (RT) for the standards ``C12:0'', ``C16:0'', ``C19:0'',
+which have known equivalent chain lengths (ECL) of 12, 16, and 19 respectively,
+the ECL of the other components are estimated as:
+
+\begin{eqnarray}
+ECL_{PLFA}=12+(16-12)\cdot \frac{RT_{PLFA}-RT_{C12:0}}{RT_{C16:0}-RT_{C12:0}}\\
+ECL_{PLFA}=16+(19-16)\cdot \frac{RT_{PLFA}-RT_{C16:0}}{RT_{C19:0}-RT_{C16:0}}
+\end{eqnarray}
+
+for components inbetween C12:0 and C16:0 and inbetween C16:0 and C19:0
+respectively.
+Components before C12:0 or after C19:0 are estimated by extrapolation, using the nearest gradient.
+
+\subsection{PLFA concentration for FID}
+The concentrations of the PLFAs, expressed in $\mu g$ PLFA, are estimated based on the peak areas of the respective PLFA ($A_{PLFA}$), the peak area of the standard ``C19:0'' ($A_{19:0}$) and the PLFA concentration of the standard that was added ($C_{19:0}$):
+\begin{eqnarray}
+C_{PLFA} =\frac{A_{Fame}/A_{19:0} \cdot C_{19:0} }{g_S\cdot f}
+\end{eqnarray}
+where $g_S$ is the total amount of the sample, f is the fraction of chloroform 
+that is recovered during the extraction.
+
+At NIOO, the amount of C19:0 added is $\approx$ 2.01 $\mu g$ PLFA (see below).
+
+\subsection{C concentration for IRMS}
+The concentrations of the PLFAs, in $\mu g$ Carbon, are estimated based on the peak areas of the respective PLFA ($A_{PLFA}$), the peak area of the standard ``C19:0'' ($A_{19:0}$) and the carbon concentration of the standard that was added ($C_{19:0}$):
+\begin{eqnarray}
+C_{PLFA} =\frac{A_{Fame}/A_{19:0} \cdot C_{19:0} }{g_S\cdot f}\cdot\frac{n}{n+1}
+\end{eqnarray}
+where $g_S$ is the total amount of the sample, f is the fraction of chloroform
+that is recovered during the extraction and n is the number of C-atoms
+in the PLFA. The last factor is to correct for the methyl group that was
+added during the analytical procedure.
+
+At NIOO, the amount of C19:0 added is $\approx$ 1.54 $\mu g$ C (see below).
+
+\subsection{PLFA isotopic compositions for IRMS}
+The delta values for the PLFAs also have to be corrected for the methyl group
+that was addded. 
+
+\begin{eqnarray}
+\delta ^{13}C_{PLFA} =\frac{(n+1) \delta^{13}C_{FAME}- 1 \delta^{13}C_{methanol}}{n}
+\end{eqnarray}
+
+At NIOO, the methanol group has a $\delta$ value of $\delta^{13}C_{methanol}$ -46\textperthousand
+
+\section{Important notes}
+\subsection{Units of the GC-FID and GC-c-IRMS}
+The GC-FID apparatus gives output in weight \emph{PLFA}, while the GC-c-IRMS measures
+in \emph{Carbon}.
+
+These are also the units that are returned by the R-functions !
+
+It is very important that the weight of the standard added is expressed in the same unit, for instance $\mu$g PLFA for GC-FID and $\mu$g C for GC-C-IRMS.
+
+\subsection{Weight of the Standard added}\label{sec:standard}
+
+The molar weight of ``C19:0'' is 312 g/mol, and can be used to convert from one unit to the other.
+
+Assume that, in the procedure 20 $\mu$l  C19:0 of a concentration $0.1$ mg ml$^{-1}$ has been added to the solution. This amounts to $20*0.1 = 2 \mu$g C19 added.
+This is the quantity that has to be used in the procedure using the GC-FID.
+The calculations for this machine return concentrations also expressed in $\mu$g PLFA.
+To convert these numbers to $\mu$g C, one needs to take into account the molar weight of the PLFA.
+
+
+\subsubsection{GC-c-IRMS standard}
+Dividing by the molar weight, we obtain the concentration of C19:0 added, expressed in $\mu$ moles.
+This is $2/312 = 0.00641 \mu$mol C19:0 added.
+C19:0 contains 19 carbon atoms; one more C atom is added in the form of methylester.
+As the molar weight of carbon = 12, the amount of carbon added is $0.00641*20*12 = 1.5385 \mu$g Carbon.
+All calculations for the GC-c-IRMS also return concentrations in gram Carbon.
+
+\subsubsection{Current standard concentration}
+The standard solution is made once in a while, and its concentration can vary slightly.
+
+As from Februari 2010, the concentration of the standard is $0.1053$.
+With 20 $\mu$l we calculate the required input for both machines.
+<<>>=
+conc.standard <- 0.1053
+(standard.fid  <- 20*conc.standard)
+(standard.irms <- 20*conc.standard/312*20*12)
+@
+\subsection{ecls that require attention in GC-c-IRMS}
+\begin{itemize}
+ \item C17:1w7c, ecl $\approx$ 17.339
+ \item C16:3w3, ecl $\approx$ 17.373; tends to move -> 17.31
+ \item C16:3w4, ecl $\approx$ 17.47; tends to move -> 17.41
+\end{itemize}
+
+
+\section{Things to do}
+\begin{itemize}
+ \item A function to merge several plfa upgraded data sets into one
+ comprehensive table?
+ \item An export function to LIMS!
+ \item add links and references to help files + vignettes....
+ \item check use of standard.ecl: should input values overwrite the original ones????
+ \item Should peaks before first peak from reference column or after last peak be removed?
+\end{itemize}
+
+
+\clearpage
+
+\end{document}

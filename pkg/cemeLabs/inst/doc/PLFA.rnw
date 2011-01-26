@@ -1,0 +1,131 @@
+\documentclass[article,nojss]{jss}
+\DeclareGraphicsExtensions{.pdf,.eps}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Add-on packages and fonts
+\usepackage{graphicx}
+\usepackage{amsmath}
+
+
+\newcommand{\noun}[1]{\textsc{#1}}
+%% Bold symbol macro for standard LaTeX users
+\providecommand{\boldsymbol}[1]{\mbox{\boldmath $#1$}}
+
+%% Because html converters don't know tabularnewline
+\providecommand{\tabularnewline}{\\}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\newcommand{\cl}{\textbf{\textsf{Rlims }}}
+\newcommand{\R}{\proglang{R}}
+\title{
+Analysing Stable Isotope Ratios in PLFA.
+}
+\Plaintitle{PLFA}
+
+\Keywords{
+  fatty acids, chromatogram, NIOO-CEME
+}
+
+\Plainkeywords{
+  fatty acids, chromatogram, NIOO-CEME
+}
+
+
+\author{
+}
+
+\Plainauthor{}
+
+\Abstract{
+
+This is the procedure as followed at NIOO-CEME. It is based on Boschker (2005) and NIOO-CEME internal lab documents (version 18-10-2006).
+}
+
+%% The address of (at least) one author should be given
+%% in the following format:
+\Address{
+NIOO-CEME
+}
+
+
+%% need no \usepackage{Sweave}
+%\VignetteIndexEntry{Rlims: Analytical procedure for Analysing Stable Isotope Ratios in PLFA.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Begin of the document
+\begin{document}
+
+\SweaveOpts{engine=R,eps=FALSE}
+\SweaveOpts{keep.source=TRUE}
+
+<<preliminaries,echo=FALSE,results=hide>>=
+library("Rlims")
+options(prompt = "> ")
+options(width=75)
+@
+
+
+
+\maketitle
+Lipid extraction includes several steps (Figure).
+\begin{enumerate}
+\item	Total lipid extraction with a chloroform-methanol mixture
+\item	Separation in polarity classes by sequential elution on a silica gel
+\item	Derivatization to release the lipids as fatty acid methyl esters (FAME)
+\item	Analysis by a gas-chromatograph-method
+\end{enumerate}
+Lipid extracts can be stored in the freezer at -20 $^o$C after each step in the procedure. Before proceeding to the next step, the sample should be allowed to regain room temperature. The equipment should be solvent-inert material (glass, Teflon, metal), e.g. glass tubes with Teflon-lined screw-caps, Pasteur pipettes and glass syringes of various sizes equipped with whole-metal needles. Before use, they should be machine washed, dried and cleaned with 4 mL methanol and 4 mL hexane.
+PLFA are easily lost by degradation. Therefore, it is best to add them directly to the extraction mixture and to finish the first part of the extraction to the total lipid extract within a couple of days. If this is not possible, sediments can be wrapped in aluminum, quickly frozen, freeze-dried and stored dry at -20 $^o$C for several months. Some losses of poly-unsaturated fatty acids found in eukaryotes may however occur in freeze dried sediments.
+As a precaution, the handling of labeled and unlabeled samples is done in separate fume hoods and using different recipients.
+
+\section{Total lipid extraction}
+This is done according to a slightly modified (Bligh & Dyer 1959) method in a mixture (1:2:0.9/v:v:v) of chloroform, methanol and ultra-pure (MilliQ) water. For wet material, the volume of water added should be reduced with the amount of water added with the sample.
+\begin{itemize}
+\item	The 50 mL extraction tubes are filled with 15 mL of methanol and 7.5 mL of chloroform and -for dry samples- 6 mL MilliQ water. If wet samples are used, the volume MilliQ water should be decreased by the amount of water added with the sample.
+\item	The sample is weighed and added into the tube. The sample should contain at least 2 milligram of organic material. For dry sediment, approximately 3 gram is needed; less can be used for organic rich samples, up to 6 gram may be needed for very organic-poor samples.
+\item	After closing the tubes, the total lipids are extracted by shaking the extraction tubes (100 to 200 rpm), for approximately 2 hours.
+\item	Phase separation is induced by adding 7.5 mL chloroform, shaking well, adding another 7.5 mL MilliQ water and shaking.
+\item	Extraction tubes are left standing until solvent layers are separated. Leaving overnight in a freezer at -20 $^o$C is sufficient; separation can be enhanced by gentle centrifugation (1000 rpm, 5 minutes).
+\item	The lower chloroform layer containing the total lipid extract is transferred with a glass syringe to 10 mL glass tubes. The weight of the tubes is recorded before and after the addition of the extract to calculate the amount of chloroform left in the extraction tube. Only between 8 to 10 ml of chloroform is usually recovered; this needs to be accounted for in the calculation procedure.
+\item	The chloroform is then evaporated to complete dryness, in vacuum evaporator (30 $^o$C, 24 mbar, 55 rpm, Labconco, RapidVap). This can also be done under a stream of nitrogen gas, pressurized air can also be used (if free from contaminants). Heating the tubes with a hair dryer will accelerate evaporation.
+\item	After evaporation, a small amount of chloroform (0.5 mL, a few drops) is immediately added to wash remaining lipids down from the inner tube walls and the total lipid extract re-dried again. This step can be repeated. Finally, the total lipid extract is dissolved again in another 0.5 mL of chloroform.
+\item	Keep at -20 $^o$C or proceed with step 2.
+\end{itemize}
+\section{Separation in polarity classes}
+The total lipid extract is separated into polarity classes on silicic-acid columns. The gel used is Merck Silicic acid gel 60, grain-size 0.063-0.200 mm.
+\begin{itemize}
+\item	The columns can be bought or hand-made in 10 ml glass, measuring pipettes which have the narrow tip removed. The pipette is first cleaned with 5 ml chloroform (inside and outside of tip).
+\item	Silicic acid gel is heat activated at 120 $^o$C, for at least 2 h and allowed to cool.  Once activated, it can be kept in a closed bottle for 2 to 3 days.
+\item	A small glass-wool ball is placed in the pipette tip to retain the silicic acid.
+\item	Silicic acid (0.5 g) is added from the top, on the glass-wool ball, and the tip of the pipette is submerged in a tube containing chloroform.  The gel is allowed to settle in the chloroform with help of some tapping on the column to remove air bubbles. The column is now ready for use.
+\item	The column is washed with 5 mL chloroform
+\item	The lipid extract is added to the top of the column. One can use half of the extract, keeping the rest for other analysis. Weigh the residue not used.
+\item	Perform  sequential elution with 7.5 mL chloroform (neutral lipid fraction), 7.5 mL acetone (most pigments) and 15 mL methanol (polar lipid fraction).  Do not disturb the top of the column while adding solvents. The top of the column should not run dry between solvent additions.
+\item	For PLFA analysis, the methanol fraction is collected in a 20 mL tube.
+\item	The methanol fraction is evaporated to dryness in the rapidvap (30 $^o$C, 160-200 mbar, 40 rpm) or under a stream of nitrogen gas; heating the tubes with a hair dryer will accelerate the process. This yields a dried polar lipid extract.
+\item	If the sample is not directly processed, then 1 mL of toluene/methanol (1:1/v:v) should be added.
+\end{itemize}
+\section{Derivatization}
+The lipid extract is derivatized by mild alkaline transmethylation to yield fatty acid methyl esters (FAME). Two internal standards are used as retention time markers for the identification of PLFA peaks. The 19:0 standard is also used for calculating PLFA concentrations and as an internal reference for isotope analysis, and 12:0 to detect possible evaporation losses of the most volatile FAME in step E. Both are also used as retention time markers for identification of PLFA peaks.
+\begin{itemize}
+\item	 Methanolic-NaOH is used as the derivatisation agent. It is made by dissolving a piece of metallic sodium, well cleaned with hexane in the appropriate volume of dry methanol (0.58 g Na in 100 g methanol). Cool in water while the metallic sodium is dissolving. The reagent can be stored under nitrogen gas in well-closed bottles for several weeks. The presence of water during the derivatization (steps A and B) will result in the formation of free fatty acids instead of FAMEs.
+\item	If not yet done, 1 mL of toluene/methanol (1:1/v:v) is added to the dried phopholipid fraction
+\item	20 $\mu$L of internal standard solution equivalent to 100 $\mu$g 19:0 FAME mL-1, and 1 mL of 0.2 M methanolic NaOH is added.
+\item	The tubes are incubated at 37 $^o$C, for 15 min (e.g. in a water bath).
+\item	2 mL of hexane, 0.3 mL 1 M acetic acid, and 2 mL of MilliQ water are added. The closed tubes are shaken well by hand to let layers separate.
+\item	 After phase separation, the upper hexane phase is collected and transferred into a 10 mL glass tube. It is important not to take any of the lower aqueous phase.
+\item	Hexane (2 mL) is added again to the 20 mL tube, shaken, the upper hexane phase is collected again and added to the first.
+\item	20 $\mu$L of the second internal standard is added (12:0 FAME solution equivalent to 100 $\mu$g mL-1).
+\item	The hexane is evaporated to dryness with the RapidVap (30 $^o$C, 160 mbar, 55 rpm), or under a mild flow of nitrogen gas. Do not add heat at this step as the lower FAMEs may be lost then. The nitrogen gas flow should not move the hexane surface.
+\item	Transfer the FAME sample in about 100 $\mu$L of hexane to a GC-sample vial.
+\item	The lipid concentrate can be kept frozen and stored at -80 to -18$^o$C pending analysis.
+\end{itemize}
+\section{GC-c-IRMS}
+FAME compositions are determined with a gas-chromatograph combustion-interface isotope-ratio mass spectrometer (GC-c-IRMS) (figure).
+\begin{itemize}
+\item The GC (Hewlett Packard G1530 GC) separates the FAMEs at high resolution using a capillary column. We use either a HP5 or a BPX-70 column, as they give different separations. The a-polar HP5 (60m length, 0,32 mm diameter, 0.25 $\mu$m film, Agilent19091S-416)  gives good separation of bacterial PLFAs, while the polar BPX-70 column (50 m, 0,32 mm, 0.25 $\mu$m, SGE054607) is better suited for poly-unsaturated PLFA found in eukaryotes like fungi and algae.
+\item	The outlet of the GC is attached to a miniature oxidation reactor where the organic molecules are combusted to CO$_2$, N$_2$ gas and H$_2$O (Type-III combustion interface). The water is removed
+\item	The purified CO$_2$ / N$_2$ is led into an isotope ratio mass spectrometer (Thermo Finnigan Delta-plus IRMS).
+\end{itemize}
+
+\clearpage
+
+\end{document}

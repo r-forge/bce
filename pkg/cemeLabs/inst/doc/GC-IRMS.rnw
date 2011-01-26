@@ -1,0 +1,146 @@
+\documentclass[article,nojss]{jss}
+\DeclareGraphicsExtensions{.pdf,.eps}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Add-on packages and fonts
+\usepackage{graphicx}
+\usepackage{amsmath}
+
+
+\newcommand{\noun}[1]{\textsc{#1}}
+%% Bold symbol macro for standard LaTeX users
+\providecommand{\boldsymbol}[1]{\mbox{\boldmath $#1$}}
+
+%% Because html converters don't know tabularnewline
+\providecommand{\tabularnewline}{\\}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\newcommand{\cl}{\textbf{\textsf{Rlims }}}
+\newcommand{\R}{\proglang{R}}
+\title{
+Elemental Analyzer Isotope Ratio Mass Spectrometry (EA-IRMS)}
+\Plaintitle{EA-IRMS}
+
+\Keywords{
+  fatty acids, chromatogram, NIOO-CEME
+}
+
+\Plainkeywords{
+  fatty acids, chromatogram, NIOO-CEME
+}
+
+
+\author{
+}
+
+\Plainauthor{}
+
+\Abstract{
+This document describes the method for determining stable isotope ratios ($^{13}C/^{12}C$ and $^{15}N/^{14}N$) by Elemental Analyzer Isotope Ratio Mass Spectrometry (EA-IRMS).
+
+This method is applicable for natural abundance or enriched biological, sediments and suspended matter samples (Boschker and Middelburg, 2002).
+
+This is the procedure as used in NIOO-CEME.
+}
+
+%% The address of (at least) one author should be given
+%% in the following format:
+\Address{
+NIOO-CEME
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% R/Sweave specific LaTeX commands.
+%% need no \usepackage{Sweave}
+%\VignetteIndexEntry{Rlims: Analytical procedure for Elemental Analyzer Isotope Ratio Mass Spectrometry (EA-IRMS)}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Begin of the document
+\begin{document}
+
+\SweaveOpts{engine=R,eps=FALSE}
+\SweaveOpts{keep.source=TRUE}
+
+<<preliminaries,echo=FALSE,results=hide>>=
+library("Rlims")
+options(prompt = "> ")
+options(width=75)
+@
+
+
+
+\maketitle
+
+\section{Pre-processing of samples}
+The following types of samples can be analysed:
+\begin{itemize}
+\item	Suspended particulate matter (SPM), on a Whatman GF/F filter, dried (60 $^o$C).
+\item	Sediment, freeze-dried and grinded.
+\item	Biological material, freeze-dried and grinded.
+\end{itemize}
+To prevent contamination,
+\begin{itemize}
+\item	The Ag and Sn-cups are extracted with hexane/acetone for 4 hours
+\item	The cups are then dried at 60 $^o$C
+\item	They are subsequently heated to 450 $^o$C (Ag) and 200 $^o$C (Sn) for 1 night
+\item	The Whatman filters are heated to 400 $^o$C for 4 hours and stored in an exsiccator.
+\end{itemize}
+In order to estimate 13C/12C ratios in samples that contain carbonate, the inorganic C has to be removed with HCl. This is not necessary for 15N/14N.
+For sediments, this is done as follows:
+\begin{itemize}
+\item	A quantity of sample corresponding to 20 to 200 $\mu$g C is put in an Ag cup.
+\item	Add 10 $\mu$L HCl 30\%, and repeat until it stops reacting (and CO$_2$ escapes).
+\item	The samples are put on a heating tray heated to 50 $^o$C, and temperature increased to 120 $^o$C.
+\item	After 15 minutes the samples are removed and left cooling.
+\item	10 $\mu$L HCl 5\% is added to ensure that all inorganic carbon is removed.
+\item	The samples are now again heated for 1 hour.
+\item	The cups are pinched closed and (preferentially) analysed immediately, or stored at 60 $^o$C.
+\end{itemize}
+For biological samples, this is slightly different:
+\begin{itemize}
+\item	A quantity of sample corresponding to 20 to 200 $\mu$g C or 2-14- $\mu$g N is put in an Ag cup.
+\item	Add 10 $\mu$L HCl 5\%, and repeat with 10-20 $\mu$l HCl 5\% until it stops reacting (and CO$_2$ escapes).
+\item	The samples are put on a heating tray heated to 50 $^o$C.
+\item	After 15 minutes the samples are removed and left cooling.
+\item	10 $\mu$L HCl 5\% is added to ensure that all inorganic carbon is removed.
+\item	The samples are now again heated for 1 hour.
+\item	The cups are pinched closed and (preferentially) analysed immediately, or stored at 60 $^o$C.
+\end{itemize}
+For suspended particulate matter samples on a whatman GF/F filter
+\begin{itemize}
+\item	The sample is weighed accurately.
+\item	A pie is cut from the filter, corresponding to 20 to 200 $\mu$g C and put is a glass petri-dish.
+\item	The sample is put is in exsiccator with on the bottom a petridish with HCl 37\%. A slight vacuum is created, and the samples left for 20 minutes.
+\item	After annihilating the vacuum, the samples are removed and left for a while to get rid of the HCl fumes.
+\item	Fold the filters and put in a Sn cups.
+\item	The cups are pinched closed and (preferentially) analysed immediately, or stored at 60 $^o$C.
+\end{itemize}
+Two control samples are added as a reference: an empty Ag cup (biological and sediment sample) or a blanc GF/F filter and a sample with known composition.
+\section{Analysis}
+Oven dried or lyophilized well grinded samples are combusted at high temperature (1020 $^o$C). Nitrous oxides are reduced with copper at 650°C to elementary nitrogen After drying the formed CO$_2$ and N$_2$ are separated on a GC-column and carried to the IRMS in a helium flow for analyzing the ion-ratios corresponding to the isotopic composition ($^{13}$C and $^{15}$N).
+
+
+The apparatuses used at NIOO are (figure):
+\begin{itemize}
+\item	the thermo Flash EA 1112 elemental analyzer, with auto sampler AS128 and Haysep-Q column 80-100 mesh I.D. 2mm
+\item	Conflo III interface
+\item	Isotope Ratio Mass Spectrometer Thermo Delta V Advantage
+\end{itemize}
+
+\section{Calculation}
+After blank correction, the results are calculated with two reference material standards through normalization.
+\begin{eqnarray}
+\delta M_{prim, r}  =\frac{\delta M_{rg, m} - \delta S1_{rg, m}}{\delta S2_{rg, m}-\delta S1_{rg, m}}\cdot(\delta S2_{prim, r}-\delta S1_{prim, r}) + \delta S1_{prim, r}
+\end{eqnarray}
+
+where
+\begin{itemize}
+\item $\delta M_{prim, r}$ = $\delta$ sample with respect to primary standard
+\item $\delta M_{rg, m}$= $\delta$  sample measured against reference gas
+\item $\delta S1_{rg, m}$=  $\delta$ reference standard 1 measured against reference gas
+\item $\delta S2_{rg, m}$=  $\delta$ reference standard 2 measured against reference gas
+\item $\delta S1_{prim, r}$ = $\delta$  reference standard 1 with respect to primary standard
+\item $\delta S2_{prim, r}$ = $\delta$  reference standard 2 with respect to primary standard
+\end{itemize}
+all $\delta$ in [\textperthousand]
+\clearpage
+
+\end{document}

@@ -1,0 +1,119 @@
+\documentclass[article,nojss]{jss}
+\DeclareGraphicsExtensions{.pdf,.eps}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Add-on packages and fonts
+\usepackage{graphicx}
+\usepackage{amsmath}
+
+
+\newcommand{\noun}[1]{\textsc{#1}}
+%% Bold symbol macro for standard LaTeX users
+\providecommand{\boldsymbol}[1]{\mbox{\boldmath $#1$}}
+
+%% Because html converters don't know tabularnewline
+\providecommand{\tabularnewline}{\\}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\newcommand{\cl}{\textbf{\textsf{Rlims }}}
+\newcommand{\R}{\proglang{R}}
+\title{
+Analysing Stable Isotope Ratios in HAAs by GC-c-IRMS.
+}
+\Plaintitle{HAAs}
+
+\Keywords{
+  fatty acids, chromatogram, NIOO-CEME
+}
+
+\Plainkeywords{
+  fatty acids, chromatogram, NIOO-CEME
+}
+
+
+\author{
+}
+
+\Plainauthor{}
+
+\Abstract{
+Determination of stable isotope ratio ($^{13}C/^{12}C$ and $^{15}N/^{14}N$) in HAAs by GC-c-IRMS.
+This analysis can be performed on faunal material as well as on sediment samples.
+The preparation is given only for biological samples
+
+This is the version of March 2007 by Bart Veuger.
+}
+
+%% The address of (at least) one author should be given
+%% in the following format:
+\Address{
+NIOO-CEME
+}
+
+
+%% need no \usepackage{Sweave}
+%\VignetteIndexEntry{Rlims: Analytical procedure for Analysing Stable Isotope Ratios in HAAs by GC-c-IRMS}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Begin of the document
+\begin{document}
+
+\SweaveOpts{engine=R,eps=FALSE}
+\SweaveOpts{keep.source=TRUE}
+
+<<preliminaries,echo=FALSE,results=hide>>=
+library("Rlims")
+options(prompt = "> ")
+options(width=75)
+@
+
+\maketitle
+
+\section{Preparation of biological samples}
+\begin{itemize}
+\item		Mark 12x32 screw cap vials with sample name/code using glass engraving tool (RE lab).
+\item		Pre-fit caps: Put closed (i.e. not open-top), teflon-lined caps on vials and warm in oven or blockheater. When warm: screw caps tight and directly unscrew (for optimal fit)
+\item		1 - 5 mg fresh (wet) fauna or freeze dried equivalent (0.1 - 0.5 mg). [or hydrolyse more material and later derivatize only part of hydrolysate (in 2nd 12x32 vial)]
+\item		Preferably destruct/homogenize using micro tissue grinder. Put material directly in 6M HCl (or first in Milli-Q and then add same volume 12M HCl). As much liquid as needed but as little as possible (max 1.5 ml in 12x32 vials).
+\item		Create N2 headspace by flushing with N2 (5.0) for few seconds
+\item		Vials in blockheater or oven at 110 $^o$C for 20h (overnight)
+\item		Take tubes from blockheater/oven (after 20 h) and allow to cool down.
+\item		Add internal standard (L-Norleucine (Nle) stock solution, 50 mg in 20 ml MQ).
+\item		Indication: ~ 10 ul Nle per mg dry material hydrolyzed (or first dilute Nle stock 10x and then add 100ul/gdw). Be precise and note added volume.
+\item		Evaporate under N2 (5.0) flow in block heater at 60$^o$C
+\item		Also evaporate some aliquots of standard solution
+\end{itemize}
+\section{Derivatation}
+This is the version of September 2009 by Bart Veuger.
+\begin{itemize}
+\item	Prepare P-buffer: For 100 ml (~ 100 samples): 0.36 g KH2PO4 [A.0.56 VA] and 0.71 g Na2HPO4 (*2 H2O) [A.0.25-S5] in 100 ml Milli-Q
+\item		Switch on block heater (110$^o$C)
+\item		Take samples from fridge (1 series = 24 samples, including standard mix)
+\item		Acidify isopropanol (IP, also called 2 -propanol) by adding acetyl chloride (AC) [A.0.25-K]   5:1 in test tube on ice . For 24 samples: 10 ml IP + 2 ml AC
+\item		Add 0.5 ml acidified IP per sample (glass Pasteur pipette as tip on precision pipette) and close tight
+\item		Samples in block heater at 110$^o$C for 90 min. After few minutes, check in caps are tight (if not, liquid in vial will bubble and volume will decrease)
+\item		Meanwhile, 	- Label GC vials ,  Start heating plate with 2 aluminum blocks (~ 50$^o$C = ``3''), Prepare evaporation setup (``Octopus'' with new Pasteur pipettes) and take P buffer from fridge.
+\item		After 90 min., take vials from heater and let cool down.
+\item		Attach vials to ``Octopus'' and evaporate under gentle N2 (5.0) flow at ~ 50$^o$C (= ``3'')
+\item		When dry, add 100-200 $\mu$l dichloromethane (DCM) [A.0.42-under fume hood] and evaporate (with glass 1 ml syringe, no need to take vials from evaporation setup)
+\item		When dry, add 150 l DCM (with glass 1 ml syringe) and 50 l pentafluoropropionic anhydride (PFA) [A.0.42-under fume hood] (with glass 250 l syringe) and close tight
+\item		Heat vials in block heater for 10 min at 110$^o$C, check if caps are tight.
+\item		After 10 min: cool down to room temperature
+\end{itemize}
+\section{Solvent extraction}
+\begin{itemize}
+\item		Add 0.5 ml chloroform and 1 ml P-buffer (with Pasteur pipette as tip on precision pipette)
+\item		Shake/vortex with ``Vortex Genie 2'' in Molecular lab (max speed for couple of minutes) or shake manually until lower fraction (chloroform) is clear
+\item		Centrifuge (2000 rpm for 10 min)
+\item		Remove lower fraction (chloroform) using 1 ml glass syringe with stainless steel needle (with blunt tip). Hold vial at ~45° angle > insert needle along the vial wall > place tip of needle at lowest point > take up chloroform (leave last bit to avoid picking up contamination) > retract needle, > wipe needle with tissue > transfer chloroform to GC vial. Rinse syringe with some chloroform between samples.
+\item		Evaporate chloroform in GC vials. Preferably leave samples overnight in fume hood. If not completely evaporated the next morning: place vials on the side and move liquid from tip to the wall of the vials (increase evaporation surface). Speeding up evaporation by heating and/or N2 flow is not recommended since derivatized amino acids are very volatile and therefore easily lost by evaporation (especially Ala !)
+\end{itemize}
+\section{Analysis}
+\begin{itemize}
+\item	When samples are completely dry: dissolve in ethyl acetate (EA). Minimum volume = 20-50  l. Preferably, start with one sample in 50  l > analyze to determine proper EA volume > dissolve other samples in proper volume. Ideal samples yield highest peaks (usually Asp and Glu) of 5 to 7 V (on GC-c-IRMS in 13C mode), this generally gives a high enough D-Ala peak without other peaks becoming too high (avoiding column overloading effects).
+\item		For GC-c-IRMS: Cap vials with teflon/butyl lined caps (for GC-FID/MS: open caps with Teflon inlays)
+\item		Store samples in freezer until analysis
+\item		Analyze samples as soon after derivatization as possible
+\item		After analysis, recap with new Teflon/butyl lined caps and store in freezer.
+\end{itemize}
+\clearpage
+
+\end{document}
