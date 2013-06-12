@@ -5,7 +5,9 @@
   produces summary plots of the random walks of the BCE; these are
   intended for inspection only.
 }
-\usage{plot.bce(x,...)}
+\usage{
+\method{plot}{bce}(x, \dots)
+}
 
 \arguments{
   \item{x }{bce object.

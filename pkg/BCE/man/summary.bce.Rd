@@ -2,7 +2,9 @@
 \alias{summary.bce}
 \title{summary BCE}
 \description{basic statistics of a bce object}
-\usage{summary.bce(object, confInt=2/3,...)}
+\usage{
+\method{summary}{bce}(object, confInt = 2/3, ...)
+}
 \arguments{
   \item{object }{a bce-object, output of the function bce().
   }
