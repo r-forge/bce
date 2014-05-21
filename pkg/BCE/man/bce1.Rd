@@ -249,7 +249,6 @@ print(Sum$meanX)
 xlim <- range(c(Sum$lbX,Sum$ubX))
 
 # first the mean
-X11()
 dotchart(x=t(Sum$meanX),xlim=xlim,                                                          
          main="Taxonomic composition",
          sub="using bce",pch=16)
