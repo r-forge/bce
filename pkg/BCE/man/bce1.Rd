@@ -3,10 +3,11 @@
 \alias{bce}
 \title{Bayesian Composition Estimator}
 \description{
-  estimates probability distributions of a sample composition
-  based on an \bold{input ratio matrix}, \code{A}, containing
-  biomarker ratios in (field) samples, and an \bold{input data matrix},
-  \code{B}, containing the biomarker ratios for several taxonomic groups.
+  This function estimates taxonomic compositions of algal communities
+  based on biomarker field data. More precisely, it estimates the probability distributions of a sample composition
+  based on an \bold{input ratio matrix}, \code{A} that contains
+  prior estimates of biomarker ratios in different taxa, and an \bold{input data matrix},
+  \code{B}, containing biomarker ratios measured in field samples.
   
   Probability distributions are estimated based on an adaptive metropolis
   MCMC method, function \code{modMCMC} from package \code{FME}.
@@ -14,7 +15,7 @@
 \usage{bce1(A, B, Wa=NULL, Wb=NULL,
        jmpType="default", jmpA=.1,jmpX=.1, jmpCovar=NULL,
        initX=NULL, initA=NULL, priorA="normal", minA=NULL, maxA=NULL, 
-       var0=NULL, wvar0=1e-4, Xratios=TRUE, verbose=TRUE, ...)
+       var0=NULL, wvar0=1e-6, Xratios=TRUE, verbose=TRUE, ...)
 }
 \arguments{
   \item{A }{input (group) ratio matrix; can be a matrix or a dataframe
@@ -34,7 +35,7 @@
     proportional to an estimated covariance matrix for the
     tlsce fit for A and the lsei fit of X (or Q if
     Xratios). jmpA and jmpX are then used as rescaling
-    factors for jump covariance matrix. If "covar", a jump
+    factors for the jump covariance matrix. If "covar", a jump
     covariance matrix with the correct dimensions, obtained
     from a previous run, is given as parameter jmpCovar.
     Covariances can be calculated from the result. 
@@ -54,7 +55,7 @@
   \item{initA }{ratio matrix used to start the markov chain:
       default the input ratio matrix A
   }
-  \item{priorA }{"normal" (gaussian - default) or "uniform"
+  \item{priorA }{"normal" (gaussian - default) or "uniform".
   }
   \item{minA }{minimum values for A
   }
@@ -67,7 +68,7 @@
     (see modMCMC). Ideally this would be 0 (initial model variance is
   not taken into account); because wvar0=0 is a special case in
   modMCMC() (fixed model variance), the default value is set to a small
-  number (wvar0=1e-4)
+  number (wvar0=1e-6)
   }
   \item{Xratios }{does the composition matrix contain ratios (TRUE) or
       estimated biomass concentrations (TRUE) per sample? In the

@@ -11,6 +11,7 @@
   The ratiomatrix contains biomarker data of a number of biological taxa.
   \code{BCE()} uses these matrices to estimate the taxonomical composition
   of the samples based on the provided taxa.
+  For use with the function \code{bce1()}, they have to be transposed. 
 }
 
 \usage{bceInput}

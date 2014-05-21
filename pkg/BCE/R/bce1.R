@@ -25,7 +25,7 @@ bce1 <- function(
                 minA    = NULL, 
                 maxA    = NULL, 
                 var0    = NULL, 
-                wvar0   = 1e-4,    
+                wvar0   = 1e-6,    
                 Xratios = TRUE, 
                 verbose=TRUE,
                 ...             

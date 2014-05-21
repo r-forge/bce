@@ -8,7 +8,7 @@
   Functions that estimate sample (taxonomic) composition from
   biomarker data
 
-  \code{bce} estimates probability distributions of a sample composition
+  \code{bce1} estimates probability distributions of a sample composition
   based on an \bold{input ratio matrix}, \code{A}, containing
   biomarker ratios in (field) samples, and an \bold{input data matrix},
   \code{B}, containing the biomarker ratios for several taxonomic groups
@@ -16,7 +16,8 @@
   \code{tlsce} estimates the total least squares solution
   
   This version differs from the previous version <2 in that a different
-  MCMC method is used that shows better convergence properties.
+  MCMC method is used that shows better convergence properties and
+  has a more sound underlying statistical model.
   
 }
 \details{

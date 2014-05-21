@@ -7,7 +7,7 @@
 \usage{export.bce(x, file="BCE", input.list=NULL, ...)
 }
 \arguments{
-  \item{x }{a bce object, output of the function bce().
+  \item{x }{a bce object, output of the function BCE().
   }
   \item{file }{file to which the bce object is written.
   }
