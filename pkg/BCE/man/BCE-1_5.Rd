@@ -3,7 +3,7 @@
 \title{Bayesian Composition Estimator}
 \description{
   \bold{this function is now superseded by the alternative
-    \code{link{bce1()}}.}
+    \code{link{bce1}}.}
   
   estimates probability distributions of a sample composition
   based on an \bold{input ratio matrix}, \code{Rat}, containing

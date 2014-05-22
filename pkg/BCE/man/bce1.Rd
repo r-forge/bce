@@ -228,20 +228,18 @@ Sum <-summary(result)
 ## we inspect the output:
 plot(result$SS,type="l")
 plot(result,ask=TRUE)
-## looks already pretty good; repeat one more time, longer run
+## looks already pretty good; to get a better result, repeat one more
+## time with a  longer run. Uncomment the following paragraph and run.
 ## go get some coffee, this might take a while (~30s).
 
-result <- bce1(A,B,niter=1e5,jmpA=.01,jmpX=.01,updatecov=1e3,
-               outputlength=1e3,burninlength=.35e5,
-               initX=Sum$lastX,initA=Sum$lastA,
-               jmpCovar=Sum$covar*2.4^2/ncol(result$pars),
-               )
-Sum <-summary(result)
-
-## we inspect the output (again ;)):
-plot(result$SS,type="l")
-plot(result,ask=TRUE)
-## ok
+## result <- bce1(A,B,niter=1e5,jmpA=.01,jmpX=.01,updatecov=1e3,
+##                outputlength=1e3,burninlength=.35e5,
+##                initX=Sum$lastX,initA=Sum$lastA,
+##                jmpCovar=Sum$covar*2.4^2/ncol(result$pars),
+##                )
+## Sum <-summary(result)
+## plot(result$SS,type="l")
+## plot(result,ask=TRUE)
 
 # show results as mean with ranges
 print(Sum$meanX)
