@@ -1,3 +1,5 @@
+importFrom("graphics", "hist", "pairs", "par", "rect", "strwidth","text")
+importFrom("stats", "cor", "cov", "quantile", "rgamma", "sd")
 importFrom(Matrix, bdiag)
 import(limSolve, FME)
 export(bce1, BCE, plot.bce, pairs.bce, export.bce, summary.bce, rescaleRows, tlsce)
