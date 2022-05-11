@@ -1,5 +1,5 @@
 Package: BCE
-Version: 2.1
+Version: 2.2
 Title: Bayesian composition estimator: estimating sample (taxonomic) composition from biomarker data
 Author: Karel Van den Meersche <karel.van_den_meersche@cirad.fr>, Karline Soetaert <karline.soetaert@nioz.nl>
 Maintainer: Karel Van den Meersche <karel.van_den_meersche@cirad.fr>
